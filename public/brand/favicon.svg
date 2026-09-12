@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <title>Snail</title>
+  <desc>A coiled shell carried by a quiet, forward-reaching line and one terracotta point.</desc>
+  <g stroke="#30372e" stroke-width="22" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M164 172C176 158 182 143 182 126C182 88 152 58 114 58C77 58 48 87 48 124C48 160 74 186 108 186C132 186 145 166 145 142C145 119 130 102 111 102C94 102 81 114 81 128C81 141 90 150 104 150"/>
+    <path d="M42 202H170C198 202 218 181 218 152V121"/>
+  </g>
+  <circle cx="218" cy="82" r="12" fill="#bf5c3c"/>
+<style>@media(prefers-color-scheme:dark){g{stroke:#e6e9dc}circle{fill:#e79670}}</style></svg>

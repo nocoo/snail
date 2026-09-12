@@ -1,0 +1,19 @@
+{
+  "name": "Snail",
+  "short_name": "Snail",
+  "description": "私人视频收藏、分类与播放库",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f0f0e9",
+  "theme_color": "#f0f0e9",
+  "icons": [
+    { "src": "/brand/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    {
+      "src": "/brand/icon-light-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

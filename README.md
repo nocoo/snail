@@ -1,3 +1,8 @@
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="public/brand/lockup-dark.svg">
+  <img src="public/brand/lockup-light.svg" width="227" height="96" alt="Snail">
+</picture>
+
 # Snail
 
 A private video collection, organization and playback library. Vite + React, TypeScript 7, Basalt, Cloudflare Worker, D1, private R2 and Cloudflare Access.
@@ -22,4 +27,6 @@ See [GOAL.md](GOAL.md) for implementation evidence and remaining release gates. 
 
 ## Brand
 
-The provisional brand slot will be replaced by the independently published Hexly Snail assets after their public URLs, pinned revision, SHA-256 checksums and license are supplied.
+Snail brand **1.0.0** is adopted from Hexly commit `352eb2652d4e11c876ef84152fc8e02f8d5ed331`. Navigation uses the actual application theme; browser icons retain the original SVG/ICO. All 21 selected files are byte-for-byte verified with `bun run brand:check`.
+
+[Brand provenance](public/brand/provenance.json) · [Usage guide](public/brand/guide.md) · [Adoption record](docs/15-品牌采用与来源.md). Original geometry/code: MIT; Space Grotesk outlines: SIL OFL 1.1. The two license notices ship with the assets. Application and brand versions are independent.

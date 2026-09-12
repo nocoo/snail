@@ -66,3 +66,7 @@ S7 同时发现 workerd 不接受 fetch `redirect: "error"`，最小 workerd 实
 - 真实产品下载器复核获准示例：HTTP 200，video/mp4，1,729,313 字节，SHA-256 `2ee43bb5411bbae7baaa856bbb36debc01fe97d7f2b4cd288d72684d4994ea1e`，720×1280，H.264，7.128526 秒，完整解码通过；临时视频已删除。
 - R2 已设置 `snail-abort-incomplete`：全部 key 的未完成 multipart 一天后自动终止；仍未部署 Worker。
 - 本地 typecheck、推荐规则 lint、63 单元/HTTP、4 桌面/手机浏览器、Vite build、Worker dry-run、11 篇研究哈希、gitleaks 工作目录扫描通过。公开 AUD 与研究中固定对象 key 使用精确白名单；未关闭秘密扫描规则。
+
+## S9 正式品牌
+
+公开 manifest 与固定源提交的 Git blob 完全相同；21 个所选原文件、根 logo 与 ICO 目录通过校验。Playwright 首次品牌用例的测试身份缺少规定前缀，已修复 fixture 并在 53e83fb 的实际旧 UI 上重新验证 RED（不存在正式 mark）；布局回归 RED 同时确认旧 SidebarHeader 挤压品牌说明。GREEN 以修正后的全部桌面/手机测试记录为准。独立品牌版本 1.0.0，不改应用语义版本。

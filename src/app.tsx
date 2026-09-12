@@ -111,12 +111,39 @@ export function App() {
             : "全部视频";
   const brand = (
     <div className="snail-brand">
-      <span className="brand-slot" data-brand="provisional" aria-hidden="true">
-        s
+      <span className="brand-mark" aria-hidden="true">
+        <img
+          data-brand-mark
+          className="theme-light-only"
+          src="/brand/mark-light.svg"
+          width="24"
+          height="24"
+          alt=""
+        />
+        <img
+          data-brand-mark
+          className="theme-dark-only"
+          src="/brand/mark-dark.svg"
+          width="24"
+          height="24"
+          alt=""
+        />
       </span>
-      <span>
-        Snail
-        <span className="brand-dot" />
+      <span className="brand-wordmark">
+        <img
+          className="theme-light-only"
+          src="/brand/wordmark-light.svg"
+          width="80"
+          height="40"
+          alt="Snail"
+        />
+        <img
+          className="theme-dark-only"
+          src="/brand/wordmark-dark.svg"
+          width="80"
+          height="40"
+          alt="Snail"
+        />
       </span>
       <span className="version-pill">{version}</span>
     </div>
@@ -211,7 +238,7 @@ export function App() {
       <AppSkipLink>跳转到资料库</AppSkipLink>
       {!mobile && (
         <Sidebar className="snail-sidebar">
-          <SidebarHeader>
+          <SidebarHeader className="snail-sidebar-heading">
             {brand}
             <span className="brand-caption">YOUR PRIVATE VIDEO LIBRARY</span>
           </SidebarHeader>
@@ -250,7 +277,22 @@ export function App() {
           }
           actions={
             <>
-              <span className="header-wordmark">Snail</span>
+              <span className="header-wordmark brand-wordmark">
+                <img
+                  className="theme-light-only"
+                  src="/brand/wordmark-light.svg"
+                  width="72"
+                  height="36"
+                  alt="Snail"
+                />
+                <img
+                  className="theme-dark-only"
+                  src="/brand/wordmark-dark.svg"
+                  width="72"
+                  height="36"
+                  alt="Snail"
+                />
+              </span>
               <ThemeToggle aria-label="切换外观" />
             </>
           }

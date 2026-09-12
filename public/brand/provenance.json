@@ -1,0 +1,138 @@
+{
+  "project": "Snail",
+  "brandVersion": "1.0.0",
+  "sourceRepository": "https://github.com/nocoo/hexly.ai",
+  "sourceCommit": "352eb2652d4e11c876ef84152fc8e02f8d5ed331",
+  "sourceRelease": "https://github.com/nocoo/hexly.ai/releases/tag/v0.8.0",
+  "sourceBase": "https://hexly.ai/brands/snail/v1.0.0/",
+  "manifestSha256": "11b8203d41030ad5317b94fd8a2a19d7a7b1077f174410b89caea4fd0d082ec8",
+  "license": "MIT; Space Grotesk outlines SIL OFL 1.1",
+  "files": [
+    {
+      "file": "apple-touch-icon.png",
+      "bytes": 5361,
+      "sha256": "49a1cc4c9797cfa345250e565f5986f4739dfd2a3c416b43b73c7d6d94ef00cb",
+      "role": "180px opaque Apple touch icon"
+    },
+    {
+      "file": "favicon.ico",
+      "bytes": 14549,
+      "sha256": "1940ad36930e36daa2bd65d65d63752b78956662aa663d021dc2781c53084ffc",
+      "role": "Transparent terracotta fallback; 16/32/48/64/128/256px"
+    },
+    {
+      "file": "favicon.svg",
+      "bytes": 719,
+      "sha256": "ad58b9a0d483ba1faee75d4307f6e4ad270e5a98fc0c3ee5179a954d28a28c43",
+      "role": "Adaptive browser favicon; no background tile"
+    },
+    {
+      "file": "guide.md",
+      "bytes": 8092,
+      "sha256": "6c2bfefaabbe4b00f9ad151107e98eb1f595fb901749c1ea5b010cf2c7f53f40",
+      "role": "Brand usage, review and evidenced design tokens"
+    },
+    {
+      "file": "icon-192.png",
+      "bytes": 5690,
+      "sha256": "37e282a0d0c7e5cdfdc2f93343c35852435a93dc3c8c77e1470d0d04ecbb9b8c",
+      "role": "192px application icon; purpose any"
+    },
+    {
+      "file": "icon-dark-512.png",
+      "bytes": 21519,
+      "sha256": "07fbb765c7b2efa631dda492ed0ada0ab6a0780e9add9f3c8bbf585b2d68b4b3",
+      "role": "512px application icon; purpose any"
+    },
+    {
+      "file": "icon-light-512.png",
+      "bytes": 21324,
+      "sha256": "fe1465736cd649c4c797f6361ad08bbca901bbd6eb780d0b26382992ede88c40",
+      "role": "512px application icon; purpose any"
+    },
+    {
+      "file": "icon-dark.svg",
+      "bytes": 593,
+      "sha256": "98eda49e8e29e3ae363461132d677418365748e72a46def7d3840cc14ea016e8",
+      "role": "Square presentation; platform supplies the mask"
+    },
+    {
+      "file": "icon-light.svg",
+      "bytes": 593,
+      "sha256": "ce49b2a1661a6c62293789d3d32353a821bbc9f90d5dc7b3f11b95c6c2ec6e4b",
+      "role": "Square presentation; platform supplies the mask"
+    },
+    {
+      "file": "license.txt",
+      "bytes": 1065,
+      "sha256": "4bd1de59e976f86422fbc5e08e3377823d6445db6854e20b737b777d0b7b2cb9",
+      "role": "MIT license for the original Snail geometry and archive code"
+    },
+    {
+      "file": "lockup-dark.svg",
+      "bytes": 6981,
+      "sha256": "d026e53908675c187b68f3af7126b413b9e59f8568a1e8c2a65d11c5d4c7ac9e",
+      "role": "Horizontal logo and wordmark"
+    },
+    {
+      "file": "lockup-light.svg",
+      "bytes": 6981,
+      "sha256": "243b6b2b100668a93577fe23a12217e27649b71f70ddd9db978a830c87d86d1c",
+      "role": "Horizontal logo and wordmark"
+    },
+    {
+      "file": "logo-dark.png",
+      "bytes": 41683,
+      "sha256": "c500389fcc93d4daf497b25d5b24d07dc7a2826af433cb58875877604ee930e6",
+      "role": "1024px transparent raster master"
+    },
+    {
+      "file": "logo-light.png",
+      "bytes": 41201,
+      "sha256": "42797d85144843ec3aaf13cf12f32ca2c008541d077de58524a78a5fa72eb672",
+      "role": "1024px transparent raster master"
+    },
+    {
+      "file": "mark-dark.svg",
+      "bytes": 632,
+      "sha256": "afeee895820129d5c793a32b711aef31b22fd59e0d9a6af1850c5eb0beb92760",
+      "role": "Transparent product mark"
+    },
+    {
+      "file": "mark-light.svg",
+      "bytes": 632,
+      "sha256": "bd936c17cf3d2c64c09150a7e4d7fd07206278505f781a8e4eb162fac2bdb00a",
+      "role": "Transparent product mark"
+    },
+    {
+      "file": "mark-mono.svg",
+      "bytes": 632,
+      "sha256": "3b3beb8c28409b10c8b60809310ec44aae22b5ff4b8fea052e96119a9ae00a8f",
+      "role": "One-color foreground; exact geometry retained"
+    },
+    {
+      "file": "space-grotesk-ofl.txt",
+      "bytes": 4401,
+      "sha256": "18a4de52385f6b988782639d5d0cc1326e5a8c2de9a7f01d7b20d9aedcc60943",
+      "role": "SIL OFL 1.1 and original font authors"
+    },
+    {
+      "file": "tokens.json",
+      "bytes": 1183,
+      "sha256": "899e00f4e0415eb641f8d2daa619db487264748b6e0beb0c032297c56d2ec62c",
+      "role": "Brand usage, review and evidenced design tokens"
+    },
+    {
+      "file": "wordmark-dark.svg",
+      "bytes": 6584,
+      "sha256": "af73b50647e00e123caa4ed7805927d2d42daeb2d2e93152baba3c378ca462ad",
+      "role": "Outlined Space Grotesk 600 wordmark"
+    },
+    {
+      "file": "wordmark-light.svg",
+      "bytes": 6584,
+      "sha256": "7a17d736ce99a4a21e9ae943083efcbc164b3002afd51efbb77d58eeeb797b30",
+      "role": "Outlined Space Grotesk 600 wordmark"
+    }
+  ]
+}
