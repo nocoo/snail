@@ -1,4 +1,3 @@
-import "@nocoo/basalt/styles/standalone";
 import "@fontsource-variable/space-grotesk";
 import "./styles.css";
 import { LinkProvider, ThemeProvider, TooltipProvider } from "@nocoo/basalt";

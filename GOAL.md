@@ -5,7 +5,7 @@
 ## 已确认（2026-09-12）
 
 - Git main 已初始化，https://github.com/nocoo/snail 已真实创建为 public，MIT；应用版本 0.1.0 尚未发布。
-- Vite + React 19 + TypeScript 7.0.2 + Biome，公开 MIT Basalt 2.1.7 的组件和独立样式入口；没有复制共享库私有实现。
+- Vite + React 19 + TypeScript 7.0.2 + Biome，公开 MIT Basalt 2.1.7 的组件和规范 Tailwind 样式入口；没有复制共享库私有实现。
 - 单 Worker assets/API + D1 + 私有 R2；Worker 独立验证 Access JWT；设备凭据限制资料库、scope、有效期，不上传 X cookie。
 - GitHub/Wrangler 均已认证；D1、R2、Access、自定义域和首个 Worker 已真实部署，远程 0001/0002 已应用；独立生产部署 Secret 已安全存入 GitHub Environment。
 - 正式 Snail 品牌 1.0.0 已采用，来源 Hexly 发布 SHA `352eb2652d4e11c876ef84152fc8e02f8d5ed331`；adoption commit `fe5f72e8a0d960a81acadc5704a04e1c4ed4f607`，21 个所选原文件逐字节验证通过。
@@ -94,3 +94,10 @@ S7 同时发现 workerd 不接受 fetch `redirect: "error"`，最小 workerd 实
 - 当前仍需要用户在本机 Chrome 完成 Snail Access 正常邮箱验证码登录；X 本机登录和下载已实证 GO，Snail 登录后生产验收及正式 tag 保持 CONDITIONAL GO。
 - S12 后 66 单元/HTTP、类型、lint、研究/品牌哈希和工作目录秘密扫描通过；原有 8 桌面/手机浏览器用例在真实远端 CI 通过。
 - 发布门禁实现提交 `a4c58384e96f1d2857f6f5cd2d71a5fff1cd1987`：CI `34701110376` 与 Deploy `34701166328` 均 success；Worker `e1abe78b-bf82-4baa-9484-9e095b4b35df`，启动 21ms，生产公开探针再次通过。`release:check` 实际因缺少已登录验收记录退出 1，正式 tag/GitHub Release 未创建。此处固定已经完成的实测，不提前断言后续文档提交的 CI 结果。
+
+## S13 · Basalt 规范 Tailwind 集成
+
+- 用户补充要求 Option A：固定 Tailwind / Vite 插件 4.3.3，CSS 为 `@source` → Basalt tailwind → tailwindcss 的三行顺序；原 standalone 入口已移除。官方 registry 两个版本端点均 HTTP 200，安装成功，锁文件无本机路径或镜像 URL。
+- RED：四个真实浏览器用例均发现应用重新声明了 Basalt 配色；原始日志 `.artifacts/S13-basalt-red.log`。GREEN：移除共享 tokens 与 chrome 尺寸覆盖，应用基础规则归入 `@layer base`，12 个桌面/手机浏览器用例全部通过；包括主题切换、56px 页头、260px 侧栏、手机无侧栏占位与合成视频上传/播放/整理。
+- 全部 66 单元/Worker HTTP、类型、Biome、构建、Worker dry-run、gitleaks，以及研究 11 篇和品牌 21 个原文件哈希均通过。Biome 的 import 顺序规则仅对指定样式文件设例外，理由和集成来源记录于 docs/12。
+- Pi 只读复核没有发现阻断项；正式品牌 adoption SHA 和所有原字节不变。本条在 Basalt 修改提交前记录，后续 CI/CD 以匹配该提交的真实 Actions 为准；Access 登录后生产验收与 v0.1.0 tag 仍保持待完成。

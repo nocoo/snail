@@ -220,6 +220,7 @@ export function App() {
     );
   return (
     <AppShell
+      className="relative"
       onDragOver={(event) => {
         if (event.dataTransfer.types.includes("Files")) {
           event.preventDefault();
@@ -237,7 +238,7 @@ export function App() {
     >
       <AppSkipLink>跳转到资料库</AppSkipLink>
       {!mobile && (
-        <Sidebar className="snail-sidebar">
+        <Sidebar>
           <SidebarHeader className="snail-sidebar-heading">
             {brand}
             <span className="brand-caption">YOUR PRIVATE VIDEO LIBRARY</span>

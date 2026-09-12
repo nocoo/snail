@@ -36,6 +36,8 @@ X 会话只留在本机 Chrome/OpenCLI，密码、cookie 和 X 授权头永不�
 
 使用 Bun 1.4.0、Node 26.8.1 和 ffmpeg/ffprobe。依赖通过公开包和锁文件安装，未复制 Basalt 私有实现。
 
+Basalt 2.1.7 使用官方 Tailwind 入口，搭配 Tailwind / Vite 插件 4.3.3；`.npmrc` 固定 `@nocoo` 到官方 npm。应用不重定义共享颜色 tokens，详细集成与样式层级见 [实施文档](docs/12-实施架构与认证边界.md)。
+
 ```sh
 bun install --frozen-lockfile
 bun run types
