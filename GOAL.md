@@ -93,3 +93,4 @@ S7 同时发现 workerd 不接受 fetch `redirect: "error"`，最小 workerd 实
 - S12 RED：缺少真实生产验收硬门禁；GREEN：发布检查要求当前 SHA/版本的七项登录后实测全部通过。pending、缺项、旧 SHA/版本均拒绝，不能以公开健康正常代替认证 Gate。全通过记录只在真实操作完成后写入 ignored 证据，当前没有生成。
 - 当前仍需要用户在本机 Chrome 完成 Snail Access 正常邮箱验证码登录；X 本机登录和下载已实证 GO，Snail 登录后生产验收及正式 tag 保持 CONDITIONAL GO。
 - S12 后 66 单元/HTTP、类型、lint、研究/品牌哈希和工作目录秘密扫描通过；原有 8 桌面/手机浏览器用例在真实远端 CI 通过。
+- 发布门禁实现提交 `a4c58384e96f1d2857f6f5cd2d71a5fff1cd1987`：CI `34701110376` 与 Deploy `34701166328` 均 success；Worker `e1abe78b-bf82-4baa-9484-9e095b4b35df`，启动 21ms，生产公开探针再次通过。`release:check` 实际因缺少已登录验收记录退出 1，正式 tag/GitHub Release 未创建。此处固定已经完成的实测，不提前断言后续文档提交的 CI 结果。
