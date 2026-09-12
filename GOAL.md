@@ -7,8 +7,8 @@
 - Git main 已初始化，https://github.com/nocoo/snail 已真实创建为 public，MIT；应用版本 0.1.0 尚未发布。
 - Vite + React 19 + TypeScript 7.0.2 + Biome，公开 MIT Basalt 2.1.7 的组件和独立样式入口；没有复制共享库私有实现。
 - 单 Worker assets/API + D1 + 私有 R2；Worker 独立验证 Access JWT；设备凭据限制资料库、scope、有效期，不上传 X cookie。
-- GitHub/Wrangler 均已认证；创建 D1、R2 和 Access 成功，独立生产部署 Secret 已安全存入 GitHub Environment；尚未部署 Worker 或应用远程迁移。
-- 正式 Snail 品牌 1.0.0 已交接，来源 Hexly 发布 SHA `352eb2652d4e11c876ef84152fc8e02f8d5ed331`；公开 manifest SHA-256 校验通过，应用接入待下一原子提交。
+- GitHub/Wrangler 均已认证；D1、R2、Access、自定义域和首个 Worker 已真实部署，远程 0001/0002 已应用；独立生产部署 Secret 已安全存入 GitHub Environment。
+- 正式 Snail 品牌 1.0.0 已采用，来源 Hexly 发布 SHA `352eb2652d4e11c876ef84152fc8e02f8d5ed331`；adoption commit `fe5f72e8a0d960a81acadc5704a04e1c4ed4f607`，21 个所选原文件逐字节验证通过。
 
 ## TDD 切片
 
@@ -34,7 +34,7 @@ S7 同时发现 workerd 不接受 fetch `redirect: "error"`，最小 workerd 实
 - Access `Snail public health`：`dcb09ac3-4813-43db-915f-a003bb91b738`，精确 `/api/live`。
 - Access `Snail device protocol`：`fad107b7-c8e8-49df-ac64-dd5362c15191`，仅 `/api/connectors/me/*`、`/api/connector-pairings`、`/api/connector-pairings/exchange` Bypass；用户批准和撤销仍受保护。
 - GitHub Environment `production`：`CLOUDFLARE_API_TOKEN` Secret 与 `CLOUDFLARE_ACCOUNT_ID` Variable 已设置。新建 `Snail production deploy` token 不含 Access 管理权限，值未打印/写入磁盘。
-- 尚未部署阶段 Hexly 首次监控 `/api/live` 为 HTTP 530/down；保持真实状态，不记作健康。
+- 尚未部署阶段 Hexly 首次监控 `/api/live` 为 HTTP 530/down；该历史结果保留。首次部署后已真实匿名 HTTP 200 JSON，数据库/存储健康，版本 0.1.0；不回填或篡改 Hexly 采样。
 
 ## 真实 X 路径
 
@@ -50,13 +50,13 @@ S7 同时发现 workerd 不接受 fetch `redirect: "error"`，最小 workerd 实
 - [x] 分片重试/续传/哈希/去重/Range，拒绝 HTML 伪 MP4
 - [x] 设备配对、最小权限、即时撤销、幂等、心跳、租约恢复
 - [x] 未登录/跨库/CSRF/SSRF/重定向/MIME/magic/大小/限流回归
-- [ ] 正式品牌接入、逐字节 provenance、亮暗主题浏览器验收
+- [x] 正式品牌接入、逐字节 provenance、亮暗主题浏览器验收
 - [ ] 真实 D1/R2/生命周期/HTTPS/Access 与已登录核心流程
 - [ ] 生产合成媒体与获准示例、哈希/Range/解码、清理临时资产
 - [ ] 独立复审最终版本，无未处理阻断项
-- [ ] docs/01–11 不变，运行/Connector/迁移/恢复/发布文档齐全
+- [x] docs/01–11 不变，运行/Connector/迁移/恢复/发布文档齐全
 - [ ] 原子提交、push main、CI/CD 成功、v0.1.0 tag/Release
-- [ ] 标准公开 `/api/live` 实际 JSON 健康，生产版本与 Release 一致
+- [ ] 标准公开 `/api/live` 实际 JSON 健康（已通过），生产版本与最终 Release 一致（待发布）
 
 尚未通过的 Gate 继续执行；不会把本地测试、资源已创建或待部署版本表述为正式交付。
 
@@ -70,3 +70,13 @@ S7 同时发现 workerd 不接受 fetch `redirect: "error"`，最小 workerd 实
 ## S9 正式品牌
 
 公开 manifest 与固定源提交的 Git blob 完全相同；21 个所选原文件、根 logo 与 ICO 目录通过校验。Playwright 首次品牌用例的测试身份缺少规定前缀，已修复 fixture 并在 53e83fb 的实际旧 UI 上重新验证 RED（不存在正式 mark）；布局回归 RED 同时确认旧 SidebarHeader 挤压品牌说明。GREEN 以修正后的全部桌面/手机测试记录为准。独立品牌版本 1.0.0，不改应用语义版本。
+
+正式 adoption commit：`fe5f72e8a0d960a81acadc5704a04e1c4ed4f607`。64 单元/HTTP 与 8 桌面/手机浏览器测试通过；品牌在应用/OS 相反主题下选择正确，未改动上游 21 个原文件。
+
+## S10–S11 发布契约与真实路径
+
+- S10 RED：生产检查模块缺失；GREEN：64 单元/HTTP 通过，探针拒绝登录 HTML、错误版本和没有认证隔离的站点。
+- S11 RED（22:44）：实际 `/api/live/` 返回 Worker 401，与原先假设的 Access 302 不同；GREEN：补充尾斜杠/后代路径的安全拒绝检查，允许 Access 302 或明确的 JSON 401 `authentication_required`，拒绝成功数据和其他伪 401。
+- 原生 Bun fetch 的真实公开探针已通过：live 200；主页、用户身份与批准路径 302 Access；live 后代与无凭据设备 401。最初本机代理/DNS 出现 TLS/解析失败，曾以当前公开 Cloudflare IP 保留 hostname/SNI/TLS 验证复核；稍后原生请求恢复，无需改系统网络或产品传输协议。
+- 首次 Worker version `d0f727ba-3431-4d22-a9e1-57e42c439963`，远程迁移无待应用项，R2 无公开入口且 multipart 一天自动终止。用户正常 Access 邮箱验证码登录仍待完成；生产核心流程与真实 Connector 配对不能提前记成功。
+- S11 后全量 65 单元/HTTP 通过；类型、lint、研究与品牌校验通过。Pi 对文档/Keychain/范围/恢复复核无功能阻断，指出的新测试格式问题已经修正并通过 lint。

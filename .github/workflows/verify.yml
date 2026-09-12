@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    uses: nocoo/base-ci/.github/workflows/quality.yml@ad43150de3a2be2fa464b5cd2f921dc4fa9f8f0f
+    with:
+      runtime-version: "1.4.0"
+      node-version: "26.8.1"
+      install-policy: "project"
+      gitleaks-config: ".gitleaks.toml"
+      gitleaks-ignore-path: ".gitleaksignore"
+      lockfiles: "bun.lock"
+      prepare-command: |
+        sudo apt-get update -qq
+        sudo apt-get install -y ffmpeg
+        bun run types
+        git diff --exit-code -- worker/worker-configuration.d.ts
+        bun run research:check
+        bun run brand:check
+      test-command: "bun run test"
+      build: true
+      build-command: |
+        bun run build
+        bun run worker:check
+
+  browser:
+    uses: nocoo/base-ci/.github/workflows/test-job.yml@ad43150de3a2be2fa464b5cd2f921dc4fa9f8f0f
+    with:
+      runtime-version: "1.4.0"
+      node-version: "26.8.1"
+      install-policy: "project"
+      pre-command: |
+        sudo apt-get update -qq
+        sudo apt-get install -y ffmpeg
+      browser: chromium
+      command: bun run test:e2e
+      artifact-name: browser-verification
+      artifact-path: |
+        playwright-report/
+        test-results/

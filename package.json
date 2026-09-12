@@ -25,6 +25,8 @@
     "fixture": "bun scripts/synthetic-video.ts",
     "research:check": "bun scripts/verify-research.ts",
     "brand:check": "bun scripts/verify-brand.ts",
+    "production:check": "bun scripts/verify-production.ts",
+    "release:check": "bun scripts/release-check.ts",
     "deploy": "wrangler d1 migrations apply snail --remote && wrangler deploy"
   },
   "dependencies": {
