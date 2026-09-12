@@ -52,8 +52,8 @@ S7 同时发现 workerd 不接受 fetch `redirect: "error"`，最小 workerd 实
 - [x] 未登录/跨库/CSRF/SSRF/重定向/MIME/magic/大小/限流回归
 - [x] 正式品牌接入、逐字节 provenance、亮暗主题浏览器验收
 - [x] 真实 D1/R2/生命周期/HTTPS 与匿名 Access 拦截
-- [ ] Access 正常登录后核心流程
-- [ ] 生产合成媒体与获准示例、哈希/Range/解码、清理临时资产
+- [x] Access 正常登录后核心流程（2026-09-13，S14–S15 真实验收）
+- [x] 生产合成媒体与获准示例、哈希/Range/解码、清理临时资产（见 S14–S15）
 - [x] Grok/Pi 独立复审，有效代码与工作流 findings 已落实；生产交互 Gate 仍单独保留
 - [x] docs/01–11 不变，运行/Connector/迁移/恢复/发布文档齐全
 - [x] 原子提交、push main、CI/CD 成功（精确已验 SHA 与 run 见下）
@@ -131,3 +131,19 @@ S7 同时发现 workerd 不接受 fetch `redirect: "error"`，最小 workerd 实
 - RED：新增 Worker HTTP 行为测试，覆盖长标题、中文笔记、长标签、大小写、字面量 `%`/`_`/反斜杠及跨库隔离；真实本地 workerd 返回 500，4 条中 1 条失败。GREEN：使用 SQLite 原生 `instr(lower(column),lower(?))`，保留 prepared 参数和资料库绑定；4/4 通过。未截断为 48 字节，也未引入搜索服务。
 - 实际配对产生的 ignored `.connector/state.json` 被 Biome 扫描，导致 lint RED；将运行时目录与 `.artifacts` 一样排除，避免修改 Connector 管理的状态文件来迎合格式化。
 - S15 本地 69 单元/HTTP 和 12 桌面/手机浏览器通过，后续最终检查与生产重验另记；原始产物在 `.artifacts/S15-*`。参考：https://developers.cloudflare.com/d1/platform/limits/ 。
+
+### S15 生产复验与清理
+
+- `02169936d38e16a553fbc17cac631c06c09f0af4` 的 CI `34724477054`、Deploy `34724550430` 均 success；Worker `d04d66d7-f89f-43f5-9b79-94a8f014c681`。生产 79 字节完整标题、132 字节中文笔记、字面量通配符与大小写查询均 200 且结果正确，真实网页编辑和搜索通过。
+- 两台已撤销临时设备的完整名称重新检索为 200 / 0 条，D1 上传均 cancelled。此前的三类晚到请求均已 401；最初综合检查因长搜索 500 失败的记录保留，没有改写为第一次就通过。
+- 合成视频经真实网页批量删除，详情、media、poster 均 404；资料库剩余且保留 1 条真实 X 收藏。其播放、哈希、海报、重复导入和收藏状态均已实证。
+- 仅对本次合成资产、已取消上传和被替换海报的 key 做受限清理；每次检查 D1 无 live/活动传输引用，再实际 R2 delete 与 get 缺失复核，5/5 完成；真实视频与当前海报不在删除范围。首次管理命令中断后按原清单继续，原失败记录保留。`.connector/tmp` 为空，12 MiB 合成临时文件和 X 读回文件已移除。
+- 产品 Connector 配对继续存于 macOS Keychain，30 天有效期，状态命令成功；验证用 watch 已正常停止，后续运行 `bun run connector -- watch` 接收网页中批准的任务。没有导入整个私人书签窗口。
+
+## S16 · 整页书签 IPC 回归（2026-09-13）
+
+- 补验无单帖参数的真实书签窗口时，父进程等待超过 3 分钟，子进程已经退出：大结果发送后立即 disconnect 会丢失 IPC 回复；原父进程遇到退出码 0 会清理超时，却不结束 Promise。
+- RED：新增执行真实 Bun CLI/fork 的行为测试，用本仓库临时合成 adapter 返回 120 条长元数据，以及正常退出但不回复两种场景；原实现均超过 8 秒测试限时。没有修改或复制 OpenCLI 实现，adapter 的 stdout/stderr 仍隔离。
+- GREEN / REFACTOR：子进程等待 `process.send` 回调后再断开；父进程在通道关闭而未收到回复时返回固定错误。2/2 测试在 2.61 秒完成，输出只含脱敏计数；日志 `.artifacts/S16-ipc-{red,green}.log`。
+- 真实 OpenCLI 重新读取完整 120 条书签、两页均 HTTP 200，返回 41 个规范化视频附件；获准示例确实在该窗口中，本次未传 sourceId、未使用单帖补查，也未上传其他书签。脱敏记录 `.artifacts/S14-bookmark-presence.json`。
+- 最终本地 71 单元/Worker HTTP、12 桌面/手机浏览器、TypeScript、Biome、Vite build、Worker dry-run、研究/品牌哈希与 gitleaks 全通过。S16 本条在提交前记录；对应远端 CI/Deploy 以该提交的 Actions 实际结果为准。当前操作与继续使用方式记录于 docs/17。

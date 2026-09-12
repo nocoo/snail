@@ -9,7 +9,7 @@
 
 - Production: https://snail.hexly.ai
 - Source: https://github.com/nocoo/snail (public, MIT)
-- 当前版本：**0.1.0 发布候选**，已首次部署，正式发布以 [Goal ledger](GOAL.md) 和 [生产验收](docs/16-发布验收记录.md) 为准。
+- 当前版本：**0.1.0 发布候选**，已部署并完成真实登录与 Connector 验证，见 [Goal ledger](GOAL.md) 和 [生产验收](docs/17-登录修复与真实收藏验收.md)。
 - [CI](https://github.com/nocoo/snail/actions/workflows/verify.yml) · [Deploy](https://github.com/nocoo/snail/actions/workflows/release.yml) · [公开健康检查](https://snail.hexly.ai/api/live)
 - 最初 11 篇中文[研究文档](docs/01-研究结论与范围.md)原样保留；实施决定和研究差异记录在 docs/12 起。
 
@@ -28,7 +28,7 @@ bun run connector -- pair https://snail.hexly.ai
 bun run connector -- watch
 ```
 
-随后在网页的「连接本机」中提交自己有权保存的 X 视频链接；Connector 读取目标媒体、验证完整解码、上传字节和海报。也支持主动导入和有界书签轮询，详见 [Connector 安装与协议](docs/13-Connector安装与协议.md)。默认 watch 只处理网页批准的任务；批量同步书签需要显式 `--approve-rights`。书签窗口最多 500 条，不承诺无限历史同步。
+随后在资料库点击「收藏链接」，提交自己有权保存的 X 视频链接；Connector 读取目标媒体、验证完整解码、上传字节和海报。「连接本机」用于查看设备与导入队列。也支持主动导入和有界书签轮询，详见 [Connector 安装与协议](docs/13-Connector安装与协议.md)。默认 watch 只处理网页批准的任务；批量同步书签需要显式 `--approve-rights`。书签窗口最多 500 条，不承诺无限历史同步。
 
 X 会话只留在本机 Chrome/OpenCLI，密码、cookie 和 X 授权头永不进入 Snail 云端。设备凭据独立、可撤销、限制权限和资料库。只保存自己拥有或有权留存的媒体；可下载的 CDN MP4 不代表版权许可，也不代表上传者的原始母版。
 

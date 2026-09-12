@@ -181,9 +181,10 @@ export function readBookmarks(
       finish();
       reject(new ConnectorError("opencli_unavailable"));
     });
-    child.once("exit", (code) => {
+    child.once("close", () => {
       finish();
-      if (code !== 0) reject(new ConnectorError("opencli_unavailable"));
+      // A clean exit without an IPC reply is still a failure, not an endless pending read.
+      reject(new ConnectorError("opencli_unavailable"));
     });
     if (signal?.aborted) abort();
   });
@@ -192,13 +193,21 @@ if (
   process.argv[2] === "--isolated" &&
   resolve(process.argv[1]) === fileURLToPath(import.meta.url)
 ) {
+  let message: { ok: true; snapshot: BookmarkSnapshot } | { ok: false; code: string };
   try {
     const snapshot = await readInChild(Number(process.argv[3]), process.argv[4] || undefined);
-    process.send?.({ ok: true, snapshot });
+    message = { ok: true, snapshot };
   } catch (error) {
-    process.send?.({
+    message = {
       ok: false,
       code: error instanceof ConnectorError ? error.code : "connector_error",
+    };
+  }
+  try {
+    // Large bookmark windows must finish writing before the IPC channel disconnects.
+    await new Promise<void>((resolveSend, reject) => {
+      if (!process.send) return reject(new ConnectorError("opencli_unavailable"));
+      process.send(message, (error) => (error ? reject(error) : resolveSend()));
     });
   } finally {
     process.disconnect?.();
