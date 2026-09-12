@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { version } from "../package.json";
+import { assertProductionAcceptance } from "./production-acceptance";
 import { verifyDeployment } from "./verify-production";
 
 const run = (command: string, args: string[]) =>
@@ -9,6 +11,15 @@ assert.match(version, /^\d+\.\d+\.\d+$/);
 assert.equal(run("git", ["status", "--porcelain"]), "", "Commit the release candidate first");
 assert.equal(run("git", ["branch", "--show-current"]), "main");
 const sha = run("git", ["rev-parse", "HEAD"]);
+let acceptance: unknown;
+try {
+  acceptance = JSON.parse(readFileSync(".artifacts/production-acceptance.json", "utf8"));
+} catch {
+  throw new Error(
+    "Authenticated production acceptance is required: .artifacts/production-acceptance.json",
+  );
+}
+assertProductionAcceptance(acceptance, sha, version);
 const remote = JSON.parse(run("gh", ["api", "repos/nocoo/snail/commits/main"])) as { sha: string };
 assert.equal(remote.sha, sha, "Push the exact candidate to main first");
 const proof: Record<string, number> = {};

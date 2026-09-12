@@ -53,7 +53,7 @@ bun run research:check    # 11 篇研究文档原字节
 bun run brand:check       # 固定品牌来源与字节
 ```
 
-提交到 main 后，CI 成功才触发生产迁移与部署。`bun run production:check` 验证公开 JSON 健康、Access 与设备鉴权；`bun run release:check` 要求干净 main、远端 SHA 与成功 CI/Deploy 一致，才可创建版本 tag/Release。生产资源、凭据权限、删除与恢复见 [运维文档](docs/14-存储迁移部署与运维.md)。
+提交到 main 后，CI 成功才触发生产迁移与部署。`bun run production:check` 验证公开 JSON 健康、Access 与设备鉴权；`bun run release:check` 还要求当前 SHA 的真实登录后验收、干净 main、远端 SHA 与成功 CI/Deploy 一致，才可创建版本 tag/Release。生产资源、凭据权限、删除与恢复见 [运维文档](docs/14-存储迁移部署与运维.md)。
 
 本仓库不包含私人 X 数据、测试视频、凭据或浏览器配置。贡献约定见 [AGENTS.md](AGENTS.md)；原始测试产物仅放 gitignored 目录。
 

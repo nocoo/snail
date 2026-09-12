@@ -33,7 +33,7 @@ S7 同时发现 workerd 不接受 fetch `redirect: "error"`，最小 workerd 实
 - Access `Snail private library`：`ac66213d-0838-4f1d-a990-d5c272c90c7c`，snail.hexly.ai，独立 AUD，24 小时会话，已有单一授权用户 Allow 策略只做关联、未更改。
 - Access `Snail public health`：`dcb09ac3-4813-43db-915f-a003bb91b738`，精确 `/api/live`。
 - Access `Snail device protocol`：`fad107b7-c8e8-49df-ac64-dd5362c15191`，仅 `/api/connectors/me/*`、`/api/connector-pairings`、`/api/connector-pairings/exchange` Bypass；用户批准和撤销仍受保护。
-- GitHub Environment `production`：`CLOUDFLARE_API_TOKEN` 和 `CLOUDFLARE_ACCOUNT_ID` Secrets 已设置，account ID 另保留公开 Variable。共享工作流在 production job 内直接读取。新建 `Snail production deploy` token 不含 Access 管理权限，值未打印/写入磁盘。
+- GitHub Environment `production`：`CLOUDFLARE_API_TOKEN` 和 `CLOUDFLARE_ACCOUNT_ID` Secrets 已设置，account ID 另保留公开 Variable。Snail 自有 production job 直接读取。新建 `Snail production deploy` token 不含 Access 管理权限，值未打印/写入磁盘。
 - 尚未部署阶段 Hexly 首次监控 `/api/live` 为 HTTP 530/down；该历史结果保留。首次部署后已真实匿名 HTTP 200 JSON，数据库/存储健康，版本 0.1.0；不回填或篡改 Hexly 采样。
 
 ## 真实 X 路径
@@ -51,11 +51,13 @@ S7 同时发现 workerd 不接受 fetch `redirect: "error"`，最小 workerd 实
 - [x] 设备配对、最小权限、即时撤销、幂等、心跳、租约恢复
 - [x] 未登录/跨库/CSRF/SSRF/重定向/MIME/magic/大小/限流回归
 - [x] 正式品牌接入、逐字节 provenance、亮暗主题浏览器验收
-- [ ] 真实 D1/R2/生命周期/HTTPS/Access 与已登录核心流程
+- [x] 真实 D1/R2/生命周期/HTTPS 与匿名 Access 拦截
+- [ ] Access 正常登录后核心流程
 - [ ] 生产合成媒体与获准示例、哈希/Range/解码、清理临时资产
-- [ ] 独立复审最终版本，无未处理阻断项
+- [x] Grok/Pi 独立复审，有效代码与工作流 findings 已落实；生产交互 Gate 仍单独保留
 - [x] docs/01–11 不变，运行/Connector/迁移/恢复/发布文档齐全
-- [ ] 原子提交、push main、CI/CD 成功、v0.1.0 tag/Release
+- [x] 原子提交、push main、CI/CD 成功（精确已验 SHA 与 run 见下）
+- [ ] v0.1.0 tag/GitHub Release，受真实登录后验收硬门禁保护
 - [ ] 标准公开 `/api/live` 实际 JSON 健康（已通过），生产版本与最终 Release 一致（待发布）
 
 尚未通过的 Gate 继续执行；不会把本地测试、资源已创建或待部署版本表述为正式交付。
@@ -81,3 +83,13 @@ S7 同时发现 workerd 不接受 fetch `redirect: "error"`，最小 workerd 实
 - 首次 Worker version `d0f727ba-3431-4d22-a9e1-57e42c439963`，远程迁移无待应用项，R2 无公开入口且 multipart 一天自动终止。用户正常 Access 邮箱验证码登录仍待完成；生产核心流程与真实 Connector 配对不能提前记成功。
 - S11 后全量 65 单元/HTTP 通过；类型、lint、研究与品牌校验通过。Pi 对文档/Keychain/范围/恢复复核无功能阻断，指出的新测试格式问题已经修正并通过 lint。
 - `a0cff27` 已实际 push main。Grok 发布复核发现 caller 无法取得 Environment Variable；按共享工作流真实契约补齐 account ID Environment Secret，callee 直接读取，未扩大秘密继承或 Access 权限。
+
+## S12 与生产 CI/CD
+
+- CI `34700384128` 在 `a41e546` 成功，但首次共享部署 `34700481827` 实际读到空 Secret。API 仅核对了两项名称存在，不能据此断言运行时可达。
+- 直接 Environment job 的布尔诊断 `34700673280` 成功；改为 Snail 自有 production job，同时保留固定 `release-source` action、准确 checkout 和部署前 fresh-main 校验。Grok 最终复核无阻断，不把差异泛化为所有 reusable workflow 的规则。
+- 已通过的部署候选：`17866ca18ed00d5cf4a8bb11eb4eabf653b60f22`；CI `34700749555`、Deploy `34700797249` 全部 success。Worker version `df5fb11a-f3cc-4dc8-9b45-4d042dba9587`，启动 22ms；远程无待应用迁移，生产 HTTPS/健康/匿名隔离探针全部通过。
+- R2 管理链路实测：合成 MP4 12,016,000 字节，SHA-256 `475079cbacedc2ed2f7d5f344074803941c0d7c5d13448e819c7e43b9c191c72`；远程写入、读回、完整解码通过，测试对象已删除。首次删除请求超时，随后重试成功。该管理链路不是已登录网页上传证据。
+- S12 RED：缺少真实生产验收硬门禁；GREEN：发布检查要求当前 SHA/版本的七项登录后实测全部通过。pending、缺项、旧 SHA/版本均拒绝，不能以公开健康正常代替认证 Gate。全通过记录只在真实操作完成后写入 ignored 证据，当前没有生成。
+- 当前仍需要用户在本机 Chrome 完成 Snail Access 正常邮箱验证码登录；X 本机登录和下载已实证 GO，Snail 登录后生产验收及正式 tag 保持 CONDITIONAL GO。
+- S12 后 66 单元/HTTP、类型、lint、研究/品牌哈希和工作目录秘密扫描通过；原有 8 桌面/手机浏览器用例在真实远端 CI 通过。
