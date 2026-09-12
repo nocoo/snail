@@ -8,7 +8,7 @@ export default defineConfig({
   expect: { timeout: 10_000 },
   reporter: [["list"], ["html", { open: "never" }]],
   use: {
-    baseURL: "http://127.0.0.1:4173",
+    baseURL: "http://127.0.0.1:17051",
     screenshot: "only-on-failure",
     trace: "retain-on-failure",
   },
@@ -21,7 +21,7 @@ export default defineConfig({
   ],
   webServer: {
     command: "bun run build && node scripts/test-server.ts",
-    url: "http://127.0.0.1:4173/api/live",
+    url: "http://127.0.0.1:17051/api/live",
     reuseExistingServer: false,
     timeout: 120_000,
   },

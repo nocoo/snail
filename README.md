@@ -41,11 +41,12 @@ Basalt 2.1.7 使用官方 Tailwind 入口，搭配 Tailwind / Vite 插件 4.3.3�
 ```sh
 bun install --frozen-lockfile
 bun run types
-bun run build
-node scripts/test-server.ts
+bun run dev
 ```
 
-访问 http://127.0.0.1:4173。完整预览使用本地 workerd/D1/R2 和合成签名身份，数据随进程结束清除；此测试代理不进入生产包。`bun run dev` 仅提供 Vite 前端热更新，不包含 API 代理。
+访问 https://snail.dev.hexly.ai（本机 Caddy）或 http://127.0.0.1:7051。Vite 提供前端热更新，API 使用本地 workerd/D1/R2 和合成签名身份，开发数据保存在 gitignored `.wrangler/dev`，重启保留。此开发代理不进入生产包，也不使用生产数据或 Access 凭据。修改 Worker 后重启开发服务。
+
+端口已登记 nmem：开发 7051、自动化 E2E 17051、BDD 27051 预留。E2E 使用独立临时库，退出后清除；需要单独预览构建时执行 `bun run build && node scripts/test-server.ts`，访问 http://127.0.0.1:17051。本机 Caddy 配置见 [本机开发环境](docs/18-本机开发环境.md)。
 
 ```sh
 bun run check              # 类型、Biome、单元/Worker HTTP、构建、Worker dry-run

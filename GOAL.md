@@ -147,3 +147,17 @@ S7 同时发现 workerd 不接受 fetch `redirect: "error"`，最小 workerd 实
 - GREEN / REFACTOR：子进程等待 `process.send` 回调后再断开；父进程在通道关闭而未收到回复时返回固定错误。2/2 测试在 2.61 秒完成，输出只含脱敏计数；日志 `.artifacts/S16-ipc-{red,green}.log`。
 - 真实 OpenCLI 重新读取完整 120 条书签、两页均 HTTP 200，返回 41 个规范化视频附件；获准示例确实在该窗口中，本次未传 sourceId、未使用单帖补查，也未上传其他书签。脱敏记录 `.artifacts/S14-bookmark-presence.json`。
 - 最终本地 71 单元/Worker HTTP、12 桌面/手机浏览器、TypeScript、Biome、Vite build、Worker dry-run、研究/品牌哈希与 gitleaks 全通过。S16 本条在提交前记录；对应远端 CI/Deploy 以该提交的 Actions 实际结果为准。当前操作与继续使用方式记录于 docs/17。
+
+## S17 · Basalt 公共控件与框架迁移（2026-09-13）
+
+- 用户要求对照 Basalt 模板与 Ocelot、Pew、Zhe，执行 `/su-basalt-upgrade` 并自查常见问题。已读取本机命令、Basalt INTEGRATION 与已发布包的 recipes/API；参考仓库只读。npm 最新版与当前锁定版均为 `@nocoo/basalt@2.1.7`，不虚增依赖版本。
+- RED：新增桌面/手机、明暗主题的框架导航与键盘控件行为回归，并为真实本地合成上传补充内容层级检查。桌面首轮 4/4 失败：两主题缺少标准顶栏仓库入口、原生 select 没有公共控件弹层、视频卡片与内容岛颜色相同。日志 `.artifacts/S17-frame-red.log`，原布局截图 `.artifacts/S17-before-frame-*`；本地测试身份与合成媒体不代表生产验证。
+
+## S18 · 本机 HTTPS 与完整开发服务（2026-09-13）
+
+- 按用户插入任务，先查询 nmem 的项目/最新预留与活动 Caddy，确认 7018 属于 Gecko；7051、17051、27051 均实测可绑定。分配 Snail 开发 7051、E2E 17051、BDD 27051 预留，登记 `snail-local-ports`。参考仓库未改动，只新增活动 Caddy 的 Snail 域名片段。
+- RED：两项真实本地 HTTP 行为测试失败，Vite `/api/live` 返回 HTML、D1/R2 无重启持久化。GREEN：Vite 接入真实本地 Worker，开发 D1/R2 保存于 `.wrangler/dev`；2/2 通过，包括签名身份、同源分类写入、外站拒绝、跨重启上传媒体读取和测试状态隔离。日志 `.artifacts/S18-local-{red,green}.log`。
+- REFACTOR：开发与 E2E 复用有界、流式响应的本地代理，移除旧测试服务重复实现；只允许预设 Host/Origin，Vite 不接受测试身份切换，浏览器 cookie/Access assertion 不转交上游。Miniflare 5 使用当前 `resourcePersistencePath`，没有无效的旧版 persistence 参数。生产认证与云端资源未改。
+- 活动 Caddy 候选校验与 reload 成功；DNS 127.0.0.1、既有通配符证书可信，HTTP 301。实际 HTTPS `/api/live` 200 JSON 且 database/storage `ok`，`/api/me` 200；Chromium 页面渲染和 HMR connected，无异常，记录 `.artifacts/S18-local-browser.json`。一次配置重启期间的浏览器等待超时已保留，不将其写为首次通过。
+- 开发服务已经保持运行；运行方式与配置在 docs/18。类型检查通过，S17 首轮完整桌面/手机回归 18/18 通过；Basalt 视觉自查、独立 review 与全量发布检查仍在继续，不将其提前记为完成。
+- S18 全量单元/Worker HTTP 73/73、类型、Biome 和差异空白检查通过。开发代理为本地用途，真实生产验收不由上述测试替代。

@@ -11,6 +11,7 @@ import {
 export async function createHarness(
   options: {
     assets?: string;
+    persist?: string;
     upstream?: (request: MfRequest) => Promise<MfResponse> | MfResponse;
   } = {},
 ) {
@@ -35,6 +36,7 @@ export async function createHarness(
       compatibilityFlags: ["nodejs_compat"],
       d1Databases: ["DB"],
       r2Buckets: ["MEDIA"],
+      resourcePersistencePath: options.persist,
       assets: options.assets
         ? {
             directory: options.assets,
@@ -68,21 +70,24 @@ export async function createHarness(
     }),
   );
   const db = await mf.getD1Database("DB");
-  const schema = (
-    await Promise.all(
-      (
-        await readdir("migrations")
-      )
-        .filter((name) => name.endsWith(".sql"))
-        .sort()
-        .map((name) => readFile(`migrations/${name}`, "utf8")),
-    )
-  ).join("\n");
-  for (const sql of schema
-    .split(";")
-    .map((s) => s.trim())
-    .filter(Boolean))
-    await db.prepare(sql).run();
+  await db.prepare("CREATE TABLE IF NOT EXISTS local_migrations (name TEXT PRIMARY KEY)").run();
+  const applied = new Set(
+    (await db.prepare("SELECT name FROM local_migrations").all<{ name: string }>()).results.map(
+      (row: { name: string }) => row.name,
+    ),
+  );
+  for (const name of (await readdir("migrations")).filter((name) => name.endsWith(".sql")).sort()) {
+    if (applied.has(name)) continue;
+    const statements = (await readFile(`migrations/${name}`, "utf8"))
+      .split(";")
+      .map((sql) => sql.trim())
+      .filter(Boolean)
+      .map((sql) => db.prepare(sql));
+    await db.batch([
+      ...statements,
+      db.prepare("INSERT INTO local_migrations (name) VALUES (?)").bind(name),
+    ]);
+  }
   async function token(subject = "user-a") {
     return new SignJWT({ type: "app", email: `${subject}@example.test` })
       .setProtectedHeader({ alg: "RS256", kid: "test-key" })
