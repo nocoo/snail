@@ -10,7 +10,7 @@ description = "Snail's public Access JWT audience; not a secret or another appli
 condition = "AND"
 paths = ['''^wrangler\.jsonc$''', '''^worker/worker-configuration\.d\.ts$''']
 regexTarget = "line"
-regexes = ['''^\s*"?ACCESS_AUD"?\s*:\s*"ea6297edaa67c77e284b40930d448a529452c0dc97eee1394f4082d2968a26a7"[,;]?\s*$''']
+regexes = ['''^\s*"?ACCESS_AUD"?\s*:\s*"8eb6edfe730072638b471da544681d01a57afb55eea360f3167abeffcf2b1695"[,;]?\s*$''']
 
 [[allowlists]]
 description = "Frozen research table: key is a literal R2 object path, not a credential"

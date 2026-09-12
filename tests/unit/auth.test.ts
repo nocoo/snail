@@ -1,3 +1,4 @@
+import { readFile } from "node:fs/promises";
 import { generateKeyPair, SignJWT } from "jose";
 import { describe, expect, it } from "vitest";
 import { enforceOrigin, verifyIdentity } from "../../worker/auth";
@@ -6,6 +7,29 @@ const issuer = "https://test.cloudflareaccess.com";
 const config = { ACCESS_TEAM_DOMAIN: issuer, ACCESS_AUD: "snail-test-aud" };
 
 describe("Access identity trust boundary", () => {
+  it("accepts the active Snail Access application's login with the deployed configuration", async () => {
+    const deployment = JSON.parse(
+      await readFile(new URL("../../wrangler.jsonc", import.meta.url), "utf8"),
+    );
+    const { privateKey, publicKey } = await generateKeyPair("RS256");
+    const token = await new SignJWT({ type: "app", email: "owner@example.test" })
+      .setProtectedHeader({ alg: "RS256" })
+      .setSubject("user-a")
+      .setIssuer("https://nocoo.cloudflareaccess.com")
+      .setAudience("8eb6edfe730072638b471da544681d01a57afb55eea360f3167abeffcf2b1695")
+      .setIssuedAt()
+      .setExpirationTime("5m")
+      .sign(privateKey);
+    const identity = await verifyIdentity(
+      new Request("https://snail.hexly.ai/api/me", {
+        headers: { "cf-access-jwt-assertion": token },
+      }),
+      deployment.vars,
+      publicKey,
+    );
+    expect(identity.subject).toBe("user-a");
+  });
+
   it("rejects missing identity; email headers cannot impersonate a user", async () => {
     await expect(
       verifyIdentity(

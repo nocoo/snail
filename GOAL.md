@@ -107,3 +107,11 @@ S7 同时发现 workerd 不接受 fetch `redirect: "error"`，最小 workerd 实
 - `fd5b6842d5090347e9296f9f591b77d17ee21f10` 的 CI `34702116869`、Deploy `34702178746` 均 success；Worker `6d28281b-b473-4195-9772-fcadbc9dccbd` 已在生产，公开健康和匿名隔离再次通过。
 - 23:29 真实匿名配对：非法 scope 400、合法申请 201、待批准兑换 428、匿名批准 302 Access、再次兑换仍 428。本次未批准测试行已限定名称/时间/状态清理，剩余 0，旧码随后 410。配对码只留进程内存，没有生成设备 token，也没有创建用户资料库或设备。
 - 23:28 本机 Chrome 的正常主页导航仍进入 Snail Access 邮箱入口；前一 goal turn 完成 Basalt 修正与上线，本次继续补齐生产配对入口证据。剩余真实登录后的上传、Keychain 配对、获准样例、撤销/晚到写入与清理全部依赖本人完成正常 Access 登录，不能用管理 API 批准或合成身份替代。
+
+## S14 · 登录配置与真实 Keychain 回归（2026-09-13）
+
+- 用户指定 team `nocoo` 与新 AUD；真实匿名 `/`、`/api/me` 的 Access 重定向确认正在使用该 AUD。本机已登录 Chrome 的首页却为 Worker JSON `authentication_required`，仓库仍配置旧 AUD，故登录后的应用 JWT 被 Worker 拒绝。仅更新部署 audience 与生成的 Env 类型，保留签名、issuer、expiry、app 身份和 CSRF 校验。
+- Access RED：新增使用真实部署配置验证当前应用 audience 的签名测试，6 条中 1 条以 `authentication_required` 失败；GREEN：6/6。证据 `.artifacts/S14-access-{red,green}.log`，测试签名身份仅在本地生成，不是生产身份。
+- Keychain RED：新增 macOS 真实临时凭据保存→读取→轮换→删除测试，以 `keychain_unavailable` 失败。根因是 `security -i` 不支持 `quit`，已写入的命令后追加它会使进程退出 1；用 stdin EOF 结束后 GREEN 1/1。测试用独立随机 account，最后删除，凭据未输出。Linux CI 明确跳过这项 macOS 集成测试。
+- GREEN / REFACTOR：只更正配置和移除无效命令，无新增依赖；68 单元/Worker HTTP、12 桌面/手机浏览器、类型、Biome、Vite build、Worker dry-run、11 篇研究哈希、21 个品牌文件与 gitleaks 均通过。原始日志在 ignored `.artifacts/S14-*`。
+- 本条写入时生产尚未部署本次修复，真实 Connector 配对和获准书签入库继续验证；后续生产结果另记，不将本地测试当生产成功。

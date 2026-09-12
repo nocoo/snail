@@ -68,7 +68,7 @@ export async function saveCredential(origin: string, token: string) {
     throw new ConnectorError("invalid_device_credential");
   await keychain(
     ["-i"],
-    `add-generic-password -U -a "${account(origin)}" -s "${service}" -w "${token}"\nquit\n`,
+    `add-generic-password -U -a "${account(origin)}" -s "${service}" -w "${token}"\n`,
   );
   // security's interactive shell can exit zero after a command error; verify without printing.
   if ((await readCredential(origin)) !== token) throw new ConnectorError("keychain_write_failed");
