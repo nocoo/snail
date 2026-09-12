@@ -1,0 +1,22 @@
+name: Check production configuration
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  configuration:
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 2
+    steps:
+      - name: Require deployment configuration without exposing values
+        env:
+          API_TOKEN_PRESENT: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
+          ACCOUNT_ID_PRESENT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
+        run: |
+          printf 'API token available: %s\nAccount ID available: %s\n' "$API_TOKEN_PRESENT" "$ACCOUNT_ID_PRESENT"
+          test "$API_TOKEN_PRESENT" = true
+          test "$ACCOUNT_ID_PRESENT" = true
