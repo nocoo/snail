@@ -33,7 +33,7 @@ S7 同时发现 workerd 不接受 fetch `redirect: "error"`，最小 workerd 实
 - Access `Snail private library`：`ac66213d-0838-4f1d-a990-d5c272c90c7c`，snail.hexly.ai，独立 AUD，24 小时会话，已有单一授权用户 Allow 策略只做关联、未更改。
 - Access `Snail public health`：`dcb09ac3-4813-43db-915f-a003bb91b738`，精确 `/api/live`。
 - Access `Snail device protocol`：`fad107b7-c8e8-49df-ac64-dd5362c15191`，仅 `/api/connectors/me/*`、`/api/connector-pairings`、`/api/connector-pairings/exchange` Bypass；用户批准和撤销仍受保护。
-- GitHub Environment `production`：`CLOUDFLARE_API_TOKEN` Secret 与 `CLOUDFLARE_ACCOUNT_ID` Variable 已设置。新建 `Snail production deploy` token 不含 Access 管理权限，值未打印/写入磁盘。
+- GitHub Environment `production`：`CLOUDFLARE_API_TOKEN` 和 `CLOUDFLARE_ACCOUNT_ID` Secrets 已设置，account ID 另保留公开 Variable。共享工作流在 production job 内直接读取。新建 `Snail production deploy` token 不含 Access 管理权限，值未打印/写入磁盘。
 - 尚未部署阶段 Hexly 首次监控 `/api/live` 为 HTTP 530/down；该历史结果保留。首次部署后已真实匿名 HTTP 200 JSON，数据库/存储健康，版本 0.1.0；不回填或篡改 Hexly 采样。
 
 ## 真实 X 路径
@@ -80,3 +80,4 @@ S7 同时发现 workerd 不接受 fetch `redirect: "error"`，最小 workerd 实
 - 原生 Bun fetch 的真实公开探针已通过：live 200；主页、用户身份与批准路径 302 Access；live 后代与无凭据设备 401。最初本机代理/DNS 出现 TLS/解析失败，曾以当前公开 Cloudflare IP 保留 hostname/SNI/TLS 验证复核；稍后原生请求恢复，无需改系统网络或产品传输协议。
 - 首次 Worker version `d0f727ba-3431-4d22-a9e1-57e42c439963`，远程迁移无待应用项，R2 无公开入口且 multipart 一天自动终止。用户正常 Access 邮箱验证码登录仍待完成；生产核心流程与真实 Connector 配对不能提前记成功。
 - S11 后全量 65 单元/HTTP 通过；类型、lint、研究与品牌校验通过。Pi 对文档/Keychain/范围/恢复复核无功能阻断，指出的新测试格式问题已经修正并通过 lint。
+- `a0cff27` 已实际 push main。Grok 发布复核发现 caller 无法取得 Environment Variable；按共享工作流真实契约补齐 account ID Environment Secret，callee 直接读取，未扩大秘密继承或 Access 权限。
