@@ -101,3 +101,9 @@ S7 同时发现 workerd 不接受 fetch `redirect: "error"`，最小 workerd 实
 - RED：四个真实浏览器用例均发现应用重新声明了 Basalt 配色；原始日志 `.artifacts/S13-basalt-red.log`。GREEN：移除共享 tokens 与 chrome 尺寸覆盖，应用基础规则归入 `@layer base`，12 个桌面/手机浏览器用例全部通过；包括主题切换、56px 页头、260px 侧栏、手机无侧栏占位与合成视频上传/播放/整理。
 - 全部 66 单元/Worker HTTP、类型、Biome、构建、Worker dry-run、gitleaks，以及研究 11 篇和品牌 21 个原文件哈希均通过。Biome 的 import 顺序规则仅对指定样式文件设例外，理由和集成来源记录于 docs/12。
 - Pi 只读复核没有发现阻断项；正式品牌 adoption SHA 和所有原字节不变。本条在 Basalt 修改提交前记录，后续 CI/CD 以匹配该提交的真实 Actions 为准；Access 登录后生产验收与 v0.1.0 tag 仍保持待完成。
+
+## 生产配对入口补充实测
+
+- `fd5b6842d5090347e9296f9f591b77d17ee21f10` 的 CI `34702116869`、Deploy `34702178746` 均 success；Worker `6d28281b-b473-4195-9772-fcadbc9dccbd` 已在生产，公开健康和匿名隔离再次通过。
+- 23:29 真实匿名配对：非法 scope 400、合法申请 201、待批准兑换 428、匿名批准 302 Access、再次兑换仍 428。本次未批准测试行已限定名称/时间/状态清理，剩余 0，旧码随后 410。配对码只留进程内存，没有生成设备 token，也没有创建用户资料库或设备。
+- 23:28 本机 Chrome 的正常主页导航仍进入 Snail Access 邮箱入口；前一 goal turn 完成 Basalt 修正与上线，本次继续补齐生产配对入口证据。剩余真实登录后的上传、Keychain 配对、获准样例、撤销/晚到写入与清理全部依赖本人完成正常 Access 登录，不能用管理 API 批准或合成身份替代。
