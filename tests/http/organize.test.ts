@@ -77,6 +77,37 @@ describe("organize a private video library", () => {
     };
     expect(none.total).toBe(0);
   });
+  it("searches long titles, Chinese notes and tags as literal case-insensitive substrings", async () => {
+    const title = "A saved video with a long title containing literal 100% and _underlines_";
+    const description = "这是一段超过五十字节的中文收藏笔记，用来验证完整内容可以检索。";
+    const tagName = "A long reference tag that remains searchable beyond fifty bytes";
+    const tag = (await (
+      await h.request("/api/tags", { method: "POST", body: JSON.stringify({ name: tagName }) })
+    ).json()) as { id: string };
+    expect(
+      (
+        await h.request(`/api/assets/${assetId}`, {
+          method: "PATCH",
+          body: JSON.stringify({ title, description, tagIds: [tag.id] }),
+        })
+      ).status,
+    ).toBe(200);
+    for (const query of [title.toUpperCase(), description, tagName, "100%", "_underlines_"]) {
+      const response = await h.request(`/api/assets?q=${encodeURIComponent(query)}`);
+      expect(response.status).toBe(200);
+      expect(await response.json()).toMatchObject({ total: 1, items: [{ id: assetId }] });
+    }
+    for (const query of ["100_", "_unrelated_", "100\\%"])
+      expect(
+        await (await h.request(`/api/assets?q=${encodeURIComponent(query)}`)).json(),
+      ).toMatchObject({ total: 0 });
+    expect(
+      await (
+        await h.request(`/api/assets?q=${encodeURIComponent(description)}`, {}, "user-b")
+      ).json(),
+    ).toMatchObject({ total: 0 });
+  });
+
   it("rejects foreign category/tag/asset IDs and applies bulk changes atomically", async () => {
     const foreign = (await (
       await h.request(

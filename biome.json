@@ -5,6 +5,7 @@
       "**",
       "!!worker/worker-configuration.d.ts",
       "!!.artifacts",
+      "!!.connector",
       "!!dist",
       "!!coverage",
       "!!bun.lock",

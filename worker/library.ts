@@ -39,11 +39,11 @@ export async function listAssets(
   const values: (string | number)[] = [libraryId];
   const q = query.get("q")?.trim().slice(0, 200);
   if (q) {
-    const term = `%${q.replace(/[\\%_]/g, "\\$&")}%`;
+    // D1 limits LIKE patterns to 50 bytes; instr also treats %, _ and backslashes literally.
     clauses.push(
-      "(a.title LIKE ? ESCAPE '\\' OR a.description LIKE ? ESCAPE '\\' OR EXISTS(SELECT 1 FROM asset_tags ats JOIN tags t ON t.id=ats.tag_id WHERE ats.asset_id=a.id AND t.name LIKE ? ESCAPE '\\'))",
+      "(instr(lower(a.title),lower(?))>0 OR instr(lower(a.description),lower(?))>0 OR EXISTS(SELECT 1 FROM asset_tags ats JOIN tags t ON t.id=ats.tag_id WHERE ats.asset_id=a.id AND instr(lower(t.name),lower(?))>0))",
     );
-    values.push(term, term, term);
+    values.push(q, q, q);
   }
   if (query.get("favorite") === "true") clauses.push("a.favorite=1");
   const category = query.get("category");

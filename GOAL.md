@@ -115,3 +115,19 @@ S7 同时发现 workerd 不接受 fetch `redirect: "error"`，最小 workerd 实
 - Keychain RED：新增 macOS 真实临时凭据保存→读取→轮换→删除测试，以 `keychain_unavailable` 失败。根因是 `security -i` 不支持 `quit`，已写入的命令后追加它会使进程退出 1；用 stdin EOF 结束后 GREEN 1/1。测试用独立随机 account，最后删除，凭据未输出。Linux CI 明确跳过这项 macOS 集成测试。
 - GREEN / REFACTOR：只更正配置和移除无效命令，无新增依赖；68 单元/Worker HTTP、12 桌面/手机浏览器、类型、Biome、Vite build、Worker dry-run、11 篇研究哈希、21 个品牌文件与 gitleaks 均通过。原始日志在 ignored `.artifacts/S14-*`。
 - 本条写入时生产尚未部署本次修复，真实 Connector 配对和获准书签入库继续验证；后续生产结果另记，不将本地测试当生产成功。
+
+### S14 生产实测进展
+
+- 修复提交 `e6b15cd81ca48ed020e68a4ac5c07ec43a5d774f` 已推送 main；CI `34723737770`、Deploy `34723793552` 均 success，Worker `abe2ae0b-07dd-4eef-84f7-11a9392df12a`。真实既有 Access 会话打开资料库，`/api/me` 200；公开健康和匿名隔离继续通过。
+- 真实产品 CLI pair → 网页查看并批准 → macOS Keychain → heartbeat 成功；仅 `media:write`、`jobs:read`，读资料库返回 403。CLI rotate 后旧凭据 401，新凭据和 Keychain 读回继续有效。
+- 网页批准的示例任务经真实 `watch` 完成；OpenCLI 120 条书签窗口、2 页 200、只处理获准目标，保存 1 条 1,729,313 字节 MP4。再次提交复用同一 asset，SHA-256 均为 `2ee43bb5411bbae7baaa856bbb36debc01fe97d7f2b4cd288d72684d4994ea1e`，720×1280，7.128526 秒，海报 ready。收藏标记已写入。
+- 生产媒体完整读回与 D1/Connector 哈希、长度一致；ffprobe H.264、ffmpeg 全解码通过；头/尾 Range 206、越界 416、JPEG 海报 200。真实前台 Chrome 播放推进到 1.16 秒、readyState 4、无媒体错误。后台标签页曾因 Chrome 暂停造成自动化等待，前台重测通过；没有复制登录 cookie。
+- 12,893,277 字节合成 MP4 在网页上传第一片后点击暂停；服务器确认片 1。重试复用同一上传 ID，只补片 2，最终 ready 和海报成功。所有网络请求到真实生产；暂停由验证脚本触发页面控件，没有伪造服务器响应。
+- 两台临时最小 scope 设备在网页撤销，已上传会话变为 cancelled；后续心跳、complete、part 均实际 401 `device_revoked`。最终资产不可见检查暴露下述长搜索缺陷，故相关综合验收尚未提前标成全通过。
+
+## S15 · 真实 D1 长搜索回归（2026-09-13）
+
+- 生产实测 47/48 个 ASCII 字符搜索 200，49/60 个字符 500；临时设备名称的长查询触发该问题。当前 Cloudflare D1 官方限制明确 `LIKE`/`GLOB` pattern 最多 50 字节，原查询添加两侧 `%` 后超限，较长中文也受影响。
+- RED：新增 Worker HTTP 行为测试，覆盖长标题、中文笔记、长标签、大小写、字面量 `%`/`_`/反斜杠及跨库隔离；真实本地 workerd 返回 500，4 条中 1 条失败。GREEN：使用 SQLite 原生 `instr(lower(column),lower(?))`，保留 prepared 参数和资料库绑定；4/4 通过。未截断为 48 字节，也未引入搜索服务。
+- 实际配对产生的 ignored `.connector/state.json` 被 Biome 扫描，导致 lint RED；将运行时目录与 `.artifacts` 一样排除，避免修改 Connector 管理的状态文件来迎合格式化。
+- S15 本地 69 单元/HTTP 和 12 桌面/手机浏览器通过，后续最终检查与生产重验另记；原始产物在 `.artifacts/S15-*`。参考：https://developers.cloudflare.com/d1/platform/limits/ 。
