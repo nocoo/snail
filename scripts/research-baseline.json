@@ -1,0 +1,13 @@
+{
+  "01-研究结论与范围.md": "061a1dcb491cb875560195ddbf714dff1f2a49dfcbdcf4202c7df73ecc435e16",
+  "02-X示例实测与最小Spike.md": "c62885ab39b33581228013ac70e2763837166d7acdedcc4ae44a14104b83223b",
+  "03-上游源码审查与方案评分.md": "6bc12801dfdf300f7b740ac79a55557a7f694b8ba953643187c62be408e7efa5",
+  "04-产品体验与信息架构.md": "9c48beedfdad889a00ee0c666486e89e4691e7e5236f81b8353fcf32dfc5c498",
+  "05-架构与数据存储.md": "2efddfeea8684fcd8337ada514ede877aafbe4fe5dd2e1dc61fa12a7f1f4e3d9",
+  "06-WorkerAPI与导入状态机.md": "1bb0196ae81c77d59c252e08270f869e27177ecb0900821549411f4dd9db4f9b",
+  "07-X登录与认证可行性.md": "6deef569e232e371c336d605088bf95526671d225998164da360c47d482bcff1",
+  "08-OpenCLI登录桥与开源下载器源码研究.md": "ba12d836a2bdbe4aec207dffd6fbe1f4a882e7411d25ac84ec40aad160a12ff2",
+  "09-安全版权与运行成本.md": "5cf1e0fb13e1d5bcfb620d56fb3a3f6c24831bf81bbf938dc915965e91671764",
+  "10-推荐MVP阶段计划与验收.md": "ab8e611c4d13d8603fb4d2684e7e49c1459218d5b2db9a48829124d68bd9a32c",
+  "11-Sources与证据索引.md": "48242e45e044fd34d55ae8bc790c32188e65abe7f7af0c2f5e52b6429ac3f497"
+}

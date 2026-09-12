@@ -2,6 +2,7 @@ import { z } from "zod";
 import { digest, randomToken } from "./auth";
 import { importSchema } from "./contracts";
 import { HttpError, json, readJson } from "./http";
+import { deviceJobs } from "./jobs";
 import { relayImport } from "./relay";
 import { audit, rateLimit } from "./store";
 import { type Actor, createUpload, savePoster, uploadRoute } from "./uploads";
@@ -51,13 +52,14 @@ interface Device {
 }
 
 export async function publicPairing(request: Request, env: Env) {
+  const path = new URL(request.url).pathname;
+  const exchanging = path === "/api/connector-pairings/exchange";
   await rateLimit(
     env,
-    `pair:${await digest(request.headers.get("cf-connecting-ip") ?? "unknown")}`,
-    30,
+    `pair:${exchanging ? "exchange" : "start"}:${await digest(request.headers.get("cf-connecting-ip") ?? "unknown")}`,
+    exchanging ? 150 : 10,
     600_000,
   );
-  const path = new URL(request.url).pathname;
   if (path === "/api/connector-pairings" && request.method === "POST") {
     const input = await readJson(request, pairingSchema);
     const deviceCode = randomToken("snail_pair");
@@ -182,18 +184,40 @@ export async function listDevices(env: Env, libraryId: string) {
 }
 
 export async function revokeDevice(env: Env, libraryId: string, id: string) {
-  const result = await env.DB.prepare("UPDATE devices SET revoked_at=? WHERE id=? AND library_id=?")
-    .bind(Date.now(), id, libraryId)
-    .run();
-  if (!result.meta.changes) throw new HttpError(404, "device_not_found");
-  await env.DB.batch([
+  const now = Date.now();
+  const results = await env.DB.batch([
+    env.DB.prepare("UPDATE devices SET revoked_at=? WHERE id=? AND library_id=?").bind(
+      now,
+      id,
+      libraryId,
+    ),
     env.DB.prepare(
-      "UPDATE uploads SET status='cancelled',updated_at=? WHERE device_id=? AND status IN ('uploading','completing','verifying')",
-    ).bind(Date.now(), id),
+      "UPDATE uploads SET status='cancelled',updated_at=? WHERE device_id=? AND library_id=? AND status IN ('uploading','completing','verifying')",
+    ).bind(now, id, libraryId),
     env.DB.prepare(
-      "UPDATE jobs SET status='queued',device_id=NULL,lease_until=NULL,updated_at=? WHERE device_id=? AND status='claimed'",
-    ).bind(Date.now(), id),
+      "UPDATE imports SET status='failed',error_code='device_revoked',updated_at=? WHERE device_id=? AND library_id=? AND status='fetching'",
+    ).bind(now, id, libraryId),
+    env.DB.prepare(
+      "UPDATE jobs SET status='queued',device_id=NULL,lease_id=NULL,lease_until=NULL,updated_at=? WHERE device_id=? AND library_id=? AND status='claimed'",
+    ).bind(now, id, libraryId),
+    env.DB.prepare(
+      "INSERT OR IGNORE INTO garbage(object_key,delete_after) SELECT object_key,? FROM uploads WHERE device_id=? AND library_id=? AND status='cancelled'",
+    ).bind(now + 300_000, id, libraryId),
+    env.DB.prepare(
+      "INSERT OR IGNORE INTO garbage(object_key,delete_after) SELECT object_key,? FROM imports WHERE device_id=? AND library_id=? AND status='failed' AND object_key IS NOT NULL",
+    ).bind(now + 300_000, id, libraryId),
   ]);
+  if (!results[0].meta.changes) throw new HttpError(404, "device_not_found");
+  const uploads = (
+    await env.DB.prepare(
+      "SELECT object_key,multipart_id FROM uploads WHERE device_id=? AND library_id=? AND status='cancelled' LIMIT 5",
+    )
+      .bind(id, libraryId)
+      .all<{ object_key: string; multipart_id: string }>()
+  ).results;
+  await Promise.allSettled(
+    uploads.map((row) => env.MEDIA.resumeMultipartUpload(row.object_key, row.multipart_id).abort()),
+  );
   await audit(env, libraryId, "device.revoked", id, id);
   return json({ revoked: true });
 }
@@ -218,6 +242,16 @@ export async function authenticateDevice(
 
 export async function deviceRoute(request: Request, env: Env) {
   const actor = await authenticateDevice(request, env);
+  try {
+    return await dispatchDevice(request, env, actor);
+  } catch (error) {
+    if (error instanceof HttpError && error.status === 400)
+      await audit(env, actor.libraryId, "protocol.rejected", undefined, actor.deviceId);
+    throw error;
+  }
+}
+
+async function dispatchDevice(request: Request, env: Env, actor: Actor & { scopes: string[] }) {
   const path = new URL(request.url).pathname.slice("/api/connectors/me".length);
   const requireScope = (scope: string) => {
     if (!actor.scopes.includes(scope)) throw new HttpError(403, "scope_required");
@@ -236,11 +270,12 @@ export async function deviceRoute(request: Request, env: Env) {
   if (path === "/rotate" && request.method === "POST") {
     const token = randomToken("snail_device");
     const expiresAt = Date.now() + 30 * 86400_000;
-    await env.DB.prepare(
-      "UPDATE devices SET token_hash=?,expires_at=? WHERE id=? AND revoked_at IS NULL",
+    const rotated = await env.DB.prepare(
+      "UPDATE devices SET token_hash=?,expires_at=? WHERE id=? AND revoked_at IS NULL AND expires_at>?",
     )
-      .bind(await digest(token), expiresAt, actor.deviceId)
+      .bind(await digest(token), expiresAt, actor.deviceId, Date.now())
       .run();
+    if (!rotated.meta.changes) throw new HttpError(401, "device_revoked");
     await audit(env, actor.libraryId, "device.rotated", actor.deviceId, actor.deviceId);
     return json({ token, expiresAt });
   }
@@ -254,6 +289,11 @@ export async function deviceRoute(request: Request, env: Env) {
         .all()
     ).results;
     return json({ items });
+  }
+  if (path.startsWith("/jobs/")) {
+    requireScope("jobs:read");
+    requireScope("media:write");
+    return deviceJobs(request, env, actor, path);
   }
   if (path === "/imports" && request.method === "POST") {
     requireScope("media:write");

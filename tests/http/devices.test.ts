@@ -131,4 +131,56 @@ describe("device pairing and least privilege", () => {
       ).status,
     ).toBe(400);
   });
+
+  it("allows the advertised ten-minute polling window independently of pairing starts", async () => {
+    const isolated = await createHarness();
+    try {
+      const pending = (await (
+        await isolated.request(
+          "/api/connector-pairings",
+          {
+            method: "POST",
+            body: JSON.stringify({ name: "Polling test", scopes: ["media:write"] }),
+          },
+          "",
+        )
+      ).json()) as { deviceCode: string };
+      for (let count = 0; count < 121; count++) {
+        const response = await isolated.request(
+          "/api/connector-pairings/exchange",
+          {
+            method: "POST",
+            body: JSON.stringify({ deviceCode: pending.deviceCode }),
+          },
+          "",
+        );
+        expect(response.status).toBe(428);
+      }
+      for (let count = 1; count < 10; count++) {
+        expect(
+          (
+            await isolated.request(
+              "/api/connector-pairings",
+              {
+                method: "POST",
+                body: JSON.stringify({ name: "Rate limit test", scopes: ["media:write"] }),
+              },
+              "",
+            )
+          ).status,
+        ).toBe(201);
+      }
+      expect(
+        (
+          await isolated.request(
+            "/api/connector-pairings",
+            { method: "POST", body: JSON.stringify({ name: "Limited", scopes: ["media:write"] }) },
+            "",
+          )
+        ).status,
+      ).toBe(429);
+    } finally {
+      await isolated.dispose();
+    }
+  });
 });

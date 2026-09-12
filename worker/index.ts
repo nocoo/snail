@@ -1,5 +1,6 @@
 import { version } from "../package.json";
 import { enforceOrigin, verifyIdentity } from "./auth";
+import { cleanup } from "./cleanup";
 import {
   approvePairing,
   deviceRoute,
@@ -9,6 +10,7 @@ import {
   revokeDevice,
 } from "./devices";
 import { HttpError, json, secureResponse } from "./http";
+import { userJobs } from "./jobs";
 import {
   bulkAssets,
   deleteAssets,
@@ -57,6 +59,8 @@ async function handle(request: Request, env: Env): Promise<Response> {
     const device = /^\/api\/devices\/([a-f0-9-]{36})$/.exec(url.pathname);
     if (device && request.method === "DELETE")
       return revokeDevice(env, identity.libraryId, device[1]);
+    const job = /^\/api\/jobs(?:\/([a-f0-9-]{36})\/(retry|cancel))?$/.exec(url.pathname);
+    if (job) return userJobs(request, env, identity.libraryId, job[1], job[2]);
     if (url.pathname === "/api/uploads" && request.method === "POST")
       return createUpload(request, env, identity);
     const upload = /^\/api\/uploads\/([a-f0-9-]{36})(?:\/(parts|complete)(?:\/(\d+))?)?$/.exec(
@@ -95,6 +99,9 @@ async function handle(request: Request, env: Env): Promise<Response> {
 }
 
 export default {
+  async scheduled(_controller, env) {
+    await cleanup(env);
+  },
   async fetch(request, env) {
     try {
       return secureResponse(await handle(request, env));

@@ -17,7 +17,10 @@ export function json(body: unknown, status = 200, headers?: HeadersInit) {
   return new Response(JSON.stringify(body), { status, headers: result });
 }
 
-export async function readBytes(request: Request, max: number): Promise<Uint8Array> {
+export async function readBytes(
+  request: Pick<Request, "body" | "headers">,
+  max: number,
+): Promise<Uint8Array> {
   const declared = request.headers.get("content-length");
   if (declared && (!/^\d+$/.test(declared) || Number(declared) > max))
     throw new HttpError(413, "body_too_large");

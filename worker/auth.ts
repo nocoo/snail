@@ -43,7 +43,8 @@ export async function verifyIdentity(
       algorithms: ["RS256"],
       requiredClaims: ["sub", "exp", "iat", "email"],
     });
-    if (!payload.sub || typeof payload.email !== "string") throw new Error("Invalid claims");
+    if (payload.type !== "app" || !payload.sub || typeof payload.email !== "string")
+      throw new Error("Invalid claims");
     return {
       subject: payload.sub,
       email: payload.email,

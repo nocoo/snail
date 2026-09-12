@@ -187,6 +187,11 @@ export async function deleteAssets(env: Env, libraryId: string, ids: string[]) {
         "INSERT OR IGNORE INTO garbage(object_key,delete_after) SELECT ?,? WHERE NOT EXISTS(SELECT 1 FROM assets WHERE blob_id=?)",
       ).bind(row.object_key, now, row.blob_id),
     );
+    ops.push(
+      env.DB.prepare(
+        "DELETE FROM blobs WHERE id=? AND library_id=? AND NOT EXISTS(SELECT 1 FROM assets WHERE blob_id=?)",
+      ).bind(row.blob_id, libraryId, row.blob_id),
+    );
   }
   await env.DB.batch(ops);
   await audit(env, libraryId, "asset.deleted", ids.length === 1 ? ids[0] : undefined);

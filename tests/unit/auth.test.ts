@@ -19,7 +19,7 @@ describe("Access identity trust boundary", () => {
 
   it("accepts only signed, unexpired JWTs for this issuer and audience", async () => {
     const { privateKey, publicKey } = await generateKeyPair("RS256");
-    const token = await new SignJWT({ email: "owner@example.test" })
+    const token = await new SignJWT({ type: "app", email: "owner@example.test" })
       .setProtectedHeader({ alg: "RS256" })
       .setSubject("user-a")
       .setIssuer(issuer)
@@ -41,7 +41,7 @@ describe("Access identity trust boundary", () => {
   it("rejects expired sessions and distinguishes libraries", async () => {
     const { privateKey, publicKey } = await generateKeyPair("RS256");
     const sign = (sub: string, exp: string) =>
-      new SignJWT({ email: "owner@example.test" })
+      new SignJWT({ type: "app", email: "owner@example.test" })
         .setProtectedHeader({ alg: "RS256" })
         .setSubject(sub)
         .setIssuer(issuer)
@@ -57,6 +57,25 @@ describe("Access identity trust boundary", () => {
     const a = await verifyIdentity(req(await sign("a", "5m")), config, publicKey);
     const b = await verifyIdentity(req(await sign("b", "5m")), config, publicKey);
     expect(a.libraryId).not.toBe(b.libraryId);
+  });
+
+  it("rejects service identities even with an email and valid app audience", async () => {
+    const { privateKey, publicKey } = await generateKeyPair("RS256");
+    const jwt = await new SignJWT({ type: "service", email: "owner@example.test" })
+      .setProtectedHeader({ alg: "RS256" })
+      .setSubject("service")
+      .setIssuer(issuer)
+      .setAudience(config.ACCESS_AUD)
+      .setIssuedAt()
+      .setExpirationTime("5m")
+      .sign(privateKey);
+    await expect(
+      verifyIdentity(
+        new Request("https://snail.test", { headers: { "cf-access-jwt-assertion": jwt } }),
+        config,
+        publicKey,
+      ),
+    ).rejects.toMatchObject({ status: 401 });
   });
 
   it("requires same-origin + custom CSRF header for browser mutations", () => {

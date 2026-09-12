@@ -1,0 +1,12 @@
+ALTER TABLE jobs ADD COLUMN source_id TEXT;
+ALTER TABLE jobs ADD COLUMN lease_id TEXT;
+ALTER TABLE jobs ADD COLUMN attempts INTEGER NOT NULL DEFAULT 0;
+CREATE UNIQUE INDEX jobs_active_source ON jobs(library_id,source_id) WHERE status IN ('queued','claimed');
+CREATE INDEX jobs_library_queue ON jobs(library_id,status,created_at);
+ALTER TABLE imports ADD COLUMN object_key TEXT;
+ALTER TABLE imports ADD COLUMN size INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE imports ADD COLUMN job_id TEXT;
+ALTER TABLE imports ADD COLUMN lease_id TEXT;
+ALTER TABLE uploads ADD COLUMN job_id TEXT;
+ALTER TABLE uploads ADD COLUMN lease_id TEXT;
+CREATE INDEX garbage_due ON garbage(delete_after);

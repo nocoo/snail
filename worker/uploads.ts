@@ -29,7 +29,7 @@ interface PartRow {
   size: number;
   sha256: string;
 }
-const quota = 50 * 1024 * 1024 * 1024;
+export const LIBRARY_QUOTA = 50 * 1024 * 1024 * 1024;
 
 async function findUpload(env: Env, actor: Actor, id: string) {
   const row = await env.DB.prepare("SELECT * FROM uploads WHERE id=? AND library_id=?")
@@ -96,92 +96,136 @@ export async function hashObject(
   }
 }
 
+export function publicationGuard(
+  actor: Actor,
+  input: Pick<UploadInput, "source" | "job">,
+  now = Date.now(),
+) {
+  return {
+    sql: `(? IS NULL OR EXISTS(SELECT 1 FROM devices WHERE id=? AND library_id=? AND revoked_at IS NULL AND expires_at>?))
+      AND (? IS NULL OR EXISTS(SELECT 1 FROM jobs WHERE id=? AND library_id=? AND device_id=? AND lease_id=? AND status='claimed' AND lease_until>? AND source_id=?))`,
+    values: [
+      actor.deviceId ?? null,
+      actor.deviceId ?? null,
+      actor.libraryId,
+      now,
+      input.job?.id ?? null,
+      input.job?.id ?? null,
+      actor.libraryId,
+      actor.deviceId ?? null,
+      input.job?.leaseId ?? null,
+      now,
+      input.source?.id ?? null,
+    ],
+  };
+}
+
 export async function publishAsset(
   env: Env,
   actor: Actor,
   input: UploadInput,
   objectKey: string,
-  uploadId?: string,
+  context: { uploadId?: string; importId?: string; reuseBlobId?: string } = {},
 ) {
-  await activeDevice(env, actor);
-  const now = Date.now();
-  const blobId = crypto.randomUUID();
-  await env.DB.prepare(
-    "INSERT OR IGNORE INTO blobs(id,library_id,object_key,sha256,size,mime,created_at) VALUES (?,?,?,?,?,?,?)",
-  )
-    .bind(blobId, actor.libraryId, objectKey, input.sha256, input.size, input.mime, now)
-    .run();
-  const blob = await env.DB.prepare(
-    "SELECT id,object_key FROM blobs WHERE library_id=? AND sha256=? AND size=?",
-  )
-    .bind(actor.libraryId, input.sha256, input.size)
-    .first<{ id: string; object_key: string }>();
-  if (!blob) throw new HttpError(500, "publish_failed");
-  if (blob.object_key !== objectKey)
-    await env.DB.prepare("INSERT OR IGNORE INTO garbage(object_key,delete_after) VALUES (?,?)")
-      .bind(objectKey, now)
-      .run();
-  let existing: { id: string } | null;
-  if (input.source) {
-    existing = await env.DB.prepare(
-      "SELECT id FROM assets WHERE library_id=? AND source_id=? AND media_id=?",
-    )
-      .bind(actor.libraryId, input.source.id, input.source.mediaId)
-      .first<{ id: string }>();
-  } else {
-    existing = await env.DB.prepare(
-      "SELECT id FROM assets WHERE library_id=? AND blob_id=? ORDER BY created_at LIMIT 1",
-    )
-      .bind(actor.libraryId, blob.id)
-      .first<{ id: string }>();
-  }
-  await activeDevice(env, actor);
-  if (existing) return { assetId: existing.id, deduplicated: true };
-  const id = crypto.randomUUID();
-  const inserted =
-    await env.DB.prepare(`INSERT OR IGNORE INTO assets(id,library_id,blob_id,title,source_id,source_url,media_id,duration,width,height,created_at,updated_at)
-    SELECT ?,?,?,?,?,?,?,?,?,?,?,? WHERE (? IS NULL OR EXISTS(SELECT 1 FROM devices WHERE id=? AND library_id=? AND revoked_at IS NULL AND expires_at>?))
-    AND (? IS NULL OR EXISTS(SELECT 1 FROM uploads WHERE id=? AND status='verifying'))`)
-      .bind(
-        id,
-        actor.libraryId,
-        blob.id,
-        input.title,
-        input.source?.id ?? null,
-        input.source?.url ?? null,
-        input.source?.mediaId ?? null,
-        input.duration ?? null,
-        input.width ?? null,
-        input.height ?? null,
-        now,
-        now,
-        actor.deviceId ?? null,
-        actor.deviceId ?? null,
-        actor.libraryId,
-        now,
-        uploadId ?? null,
-        uploadId ?? null,
-      )
-      .run();
-  if (inserted.meta.changes === 0) {
+  const now = Date.now(),
+    id = crypto.randomUUID(),
+    blobId = crypto.randomUUID();
+  const guard = publicationGuard(actor, input, now);
+  guard.sql += ` AND (? IS NULL OR EXISTS(SELECT 1 FROM uploads WHERE id=? AND library_id=? AND status='verifying'))
+    AND (? IS NULL OR EXISTS(SELECT 1 FROM imports WHERE id=? AND library_id=? AND status='fetching' AND object_key=?))`;
+  guard.values.push(
+    context.uploadId ?? null,
+    context.uploadId ?? null,
+    actor.libraryId,
+    context.importId ?? null,
+    context.importId ?? null,
+    actor.libraryId,
+    objectKey,
+  );
+  const blobSql = "SELECT id FROM blobs WHERE library_id=? AND sha256=? AND size=?";
+  const blobValues = [actor.libraryId, input.sha256, input.size];
+  const assetSql = input.source
+    ? "SELECT id FROM assets WHERE library_id=? AND source_id=? AND media_id=? LIMIT 1"
+    : `SELECT id FROM assets WHERE library_id=? AND blob_id=(${blobSql}) ORDER BY created_at,id LIMIT 1`;
+  const assetValues = input.source
+    ? [actor.libraryId, input.source.id, input.source.mediaId]
+    : [actor.libraryId, ...blobValues];
+  const ops = [
+    env.DB.prepare(
+      `INSERT OR IGNORE INTO blobs(id,library_id,object_key,sha256,size,mime,created_at) SELECT ?,?,?,?,?,?,? WHERE ${guard.sql} AND ? IS NULL`,
+    ).bind(
+      blobId,
+      actor.libraryId,
+      objectKey,
+      input.sha256,
+      input.size,
+      input.mime,
+      now,
+      ...guard.values,
+      context.reuseBlobId ?? null,
+    ),
+    env.DB.prepare(`INSERT OR IGNORE INTO assets(id,library_id,blob_id,title,source_id,source_url,media_id,duration,width,height,created_at,updated_at)
+      SELECT ?,?,(${blobSql}),?,?,?,?,?,?,?,?,? WHERE ${guard.sql} AND EXISTS(${blobSql}) AND NOT EXISTS(${assetSql})`).bind(
+      id,
+      actor.libraryId,
+      ...blobValues,
+      input.title,
+      input.source?.id ?? null,
+      input.source?.url ?? null,
+      input.source?.mediaId ?? null,
+      input.duration ?? null,
+      input.width ?? null,
+      input.height ?? null,
+      now,
+      now,
+      ...guard.values,
+      ...blobValues,
+      ...assetValues,
+    ),
+    env.DB.prepare(`SELECT id FROM assets WHERE id=(${assetSql}) AND ${guard.sql}`).bind(
+      ...assetValues,
+      ...guard.values,
+    ),
+  ];
+  if (context.uploadId)
+    ops.push(
+      env.DB.prepare(
+        `UPDATE uploads SET status='ready',asset_id=(${assetSql}),updated_at=? WHERE id=? AND status='verifying' AND ${guard.sql} AND EXISTS(${assetSql})`,
+      ).bind(...assetValues, now, context.uploadId, ...guard.values, ...assetValues),
+    );
+  if (context.importId)
+    ops.push(
+      env.DB.prepare(
+        `UPDATE imports SET status='ready',asset_id=(${assetSql}),updated_at=? WHERE id=? AND status='fetching' AND ${guard.sql} AND EXISTS(${assetSql})`,
+      ).bind(...assetValues, now, context.importId, ...guard.values, ...assetValues),
+    );
+  ops.push(
+    env.DB.prepare(
+      "INSERT OR IGNORE INTO garbage(object_key,delete_after) SELECT ?,? WHERE NOT EXISTS(SELECT 1 FROM blobs WHERE object_key=?)",
+    ).bind(objectKey, now, objectKey),
+  );
+  const result = await env.DB.batch(ops);
+  const asset = result[2].results[0] as { id: string } | undefined;
+  if (!asset) {
     await activeDevice(env, actor);
-    if (input.source) {
-      const other = await env.DB.prepare(
-        "SELECT id FROM assets WHERE library_id=? AND source_id=? AND media_id=?",
-      )
-        .bind(actor.libraryId, input.source.id, input.source.mediaId)
-        .first<{ id: string }>();
-      if (other) return { assetId: other.id, deduplicated: true };
-    }
     throw new HttpError(409, "publish_cancelled");
   }
-  await audit(env, actor.libraryId, "asset.created", id, actor.deviceId);
-  return { assetId: id, deduplicated: false };
+  await audit(
+    env,
+    actor.libraryId,
+    asset.id === id ? "asset.created" : "asset.deduplicated",
+    asset.id,
+    actor.deviceId,
+  );
+  return { assetId: asset.id, deduplicated: asset.id !== id };
 }
 
 export async function createUpload(request: Request, env: Env, actor: Actor) {
   const input = await readJson(request, uploadSchema);
-  if (input.source && !input.source.url.endsWith(`/status/${input.source.id}`))
+  if (
+    (input.job && !input.source) ||
+    (input.source && !input.source.url.endsWith(`/status/${input.source.id}`))
+  )
     throw new HttpError(400, "source_mismatch");
   await activeDevice(env, actor);
   const blob = await env.DB.prepare(
@@ -190,11 +234,24 @@ export async function createUpload(request: Request, env: Env, actor: Actor) {
     .bind(actor.libraryId, input.sha256, input.size)
     .first<{ id: string; object_key: string }>();
   if (blob)
-    return json({ status: "ready", ...(await publishAsset(env, actor, input, blob.object_key)) });
+    return json({
+      status: "ready",
+      ...(await publishAsset(env, actor, input, blob.object_key, { reuseBlobId: blob.id })),
+    });
   const resume = await env.DB.prepare(
-    "SELECT id FROM uploads WHERE library_id=? AND sha256=? AND size=? AND status='uploading' AND expires_at>? AND device_id IS ? ORDER BY created_at DESC LIMIT 1",
+    "SELECT id FROM uploads WHERE library_id=? AND sha256=? AND size=? AND status='uploading' AND expires_at>? AND device_id IS ? AND job_id IS ? AND lease_id IS ? AND json_extract(input,'$.source.id') IS ? AND json_extract(input,'$.source.mediaId') IS ? ORDER BY created_at DESC LIMIT 1",
   )
-    .bind(actor.libraryId, input.sha256, input.size, Date.now(), actor.deviceId ?? null)
+    .bind(
+      actor.libraryId,
+      input.sha256,
+      input.size,
+      Date.now(),
+      actor.deviceId ?? null,
+      input.job?.id ?? null,
+      input.job?.leaseId ?? null,
+      input.source?.id ?? null,
+      input.source?.mediaId ?? null,
+    )
     .first<{ id: string }>();
   if (resume) return json({ id: resume.id, partSize: PART_BYTES, resumed: true }, 200);
   const id = crypto.randomUUID();
@@ -205,11 +262,12 @@ export async function createUpload(request: Request, env: Env, actor: Actor) {
   });
   const now = Date.now();
   try {
+    const guard = publicationGuard(actor, input, now);
     const result =
-      await env.DB.prepare(`INSERT INTO uploads(id,library_id,device_id,object_key,multipart_id,input,size,sha256,mime,status,created_at,updated_at,expires_at)
-      SELECT ?,?,?,?,?,?,?,?,?,'uploading',?,?,? WHERE
-      (SELECT COUNT(*) FROM uploads WHERE library_id=? AND status IN ('uploading','completing','verifying') AND expires_at>?) < 5 AND
-      COALESCE((SELECT SUM(size) FROM blobs WHERE library_id=?),0) + COALESCE((SELECT SUM(size) FROM uploads WHERE library_id=? AND status IN ('uploading','completing','verifying') AND expires_at>?),0) + ? <= ?`)
+      await env.DB.prepare(`INSERT INTO uploads(id,library_id,device_id,object_key,multipart_id,input,size,sha256,mime,status,created_at,updated_at,expires_at,job_id,lease_id)
+      SELECT ?,?,?,?,?,?,?,?,?,'uploading',?,?,?,?,? WHERE ${guard.sql} AND
+      (SELECT COUNT(*) FROM uploads WHERE library_id=? AND status IN ('uploading','completing','verifying') AND expires_at>?) + (SELECT COUNT(*) FROM imports WHERE library_id=? AND status='fetching') < 5 AND
+      COALESCE((SELECT SUM(size) FROM blobs WHERE library_id=?),0) + COALESCE((SELECT SUM(size) FROM uploads WHERE library_id=? AND status IN ('uploading','completing','verifying') AND expires_at>?),0) + COALESCE((SELECT SUM(size) FROM imports WHERE library_id=? AND status='fetching'),0) + ? <= ?`)
         .bind(
           id,
           actor.libraryId,
@@ -223,13 +281,18 @@ export async function createUpload(request: Request, env: Env, actor: Actor) {
           now,
           now,
           now + 24 * 3600_000,
+          input.job?.id ?? null,
+          input.job?.leaseId ?? null,
+          ...guard.values,
           actor.libraryId,
           now,
           actor.libraryId,
           actor.libraryId,
+          actor.libraryId,
           now,
+          actor.libraryId,
           input.size,
-          quota,
+          LIBRARY_QUOTA,
         )
         .run();
     if (result.meta.changes === 0) throw new HttpError(409, "upload_quota_exceeded");
@@ -253,7 +316,7 @@ export async function uploadRoute(
   if (!action && request.method === "GET") {
     const parts = (
       await env.DB.prepare(
-        "SELECT part_number AS partNumber,size,sha256 FROM upload_parts WHERE upload_id=? ORDER BY part_number",
+        "SELECT part_number AS partNumber,size,sha256 FROM upload_parts WHERE upload_id=? AND etag!='' ORDER BY part_number",
       )
         .bind(id)
         .all()
@@ -282,6 +345,14 @@ export async function uploadRoute(
   if (action === "complete" && request.method === "POST" && row.status === "ready")
     return json({ status: "ready", assetId: row.asset_id });
   if (row.expires_at <= Date.now()) throw new HttpError(410, "upload_expired");
+  const currentInput = uploadSchema.parse(JSON.parse(row.input));
+  const transferGuard = publicationGuard(actor, currentInput);
+  if (
+    !(await env.DB.prepare(`SELECT 1 WHERE ${transferGuard.sql}`)
+      .bind(...transferGuard.values)
+      .first())
+  )
+    throw new HttpError(409, "upload_not_writable");
   if (action === "parts" && request.method === "PUT") {
     if (row.status !== "uploading") throw new HttpError(409, "upload_not_writable");
     const part = Number(number);
@@ -292,19 +363,26 @@ export async function uploadRoute(
     if (bytes.length !== expected) throw new HttpError(422, "part_size_mismatch");
     if (part === 1) sniffVideo(bytes, row.mime);
     const sha256 = await digest(bytes);
+    await activeDevice(env, actor);
+    await env.DB.prepare(
+      `INSERT INTO upload_parts(upload_id,part_number,etag,size,sha256) SELECT ?,?,'',?,? WHERE EXISTS(SELECT 1 FROM uploads WHERE id=? AND status='uploading') AND ${transferGuard.sql} ON CONFLICT(upload_id,part_number) DO NOTHING`,
+    )
+      .bind(id, part, expected, sha256, id, ...transferGuard.values)
+      .run();
     const previous = await env.DB.prepare(
-      "SELECT sha256 FROM upload_parts WHERE upload_id=? AND part_number=?",
+      "SELECT sha256,etag FROM upload_parts WHERE upload_id=? AND part_number=?",
     )
       .bind(id, part)
-      .first<{ sha256: string }>();
-    if (previous && previous.sha256 !== sha256) throw new HttpError(409, "part_conflict");
-    if (previous) return json({ partNumber: part, sha256, reused: true });
-    await activeDevice(env, actor);
+      .first<{ sha256: string; etag: string }>();
+    if (!previous) throw new HttpError(409, "upload_not_writable");
+    if (previous.sha256 !== sha256) throw new HttpError(409, "part_conflict");
+    if (previous.etag) return json({ partNumber: part, sha256, reused: true });
     const stored = await multipart.uploadPart(part, bytes);
+    const guard = publicationGuard(actor, uploadSchema.parse(JSON.parse(row.input)));
     const inserted = await env.DB.prepare(
-      "INSERT INTO upload_parts(upload_id,part_number,etag,size,sha256) SELECT ?,?,?,?,? WHERE EXISTS(SELECT 1 FROM uploads WHERE id=? AND status='uploading') ON CONFLICT(upload_id,part_number) DO NOTHING",
+      `UPDATE upload_parts SET etag=? WHERE upload_id=? AND part_number=? AND sha256=? AND EXISTS(SELECT 1 FROM uploads WHERE id=? AND status='uploading') AND ${guard.sql}`,
     )
-      .bind(id, part, stored.etag, expected, sha256, id)
+      .bind(stored.etag, id, part, sha256, id, ...guard.values)
       .run();
     if (!inserted.meta.changes) throw new HttpError(409, "upload_not_writable");
     await env.DB.prepare("UPDATE uploads SET updated_at=? WHERE id=?").bind(Date.now(), id).run();
@@ -314,7 +392,9 @@ export async function uploadRoute(
     if (!["uploading", "verifying", "completing"].includes(row.status))
       throw new HttpError(409, "upload_not_writable");
     const parts = (
-      await env.DB.prepare("SELECT * FROM upload_parts WHERE upload_id=? ORDER BY part_number")
+      await env.DB.prepare(
+        "SELECT * FROM upload_parts WHERE upload_id=? AND etag!='' ORDER BY part_number",
+      )
         .bind(id)
         .all<PartRow>()
     ).results;
@@ -328,9 +408,9 @@ export async function uploadRoute(
     try {
       if (row.status === "uploading") {
         const lock = await env.DB.prepare(
-          "UPDATE uploads SET status='completing',updated_at=? WHERE id=? AND status='uploading'",
+          `UPDATE uploads SET status='completing',updated_at=? WHERE id=? AND status='uploading' AND ${transferGuard.sql}`,
         )
-          .bind(Date.now(), id)
+          .bind(Date.now(), id, ...transferGuard.values)
           .run();
         if (!lock.meta.changes) return json({ status: "completing" }, 202);
         await multipart.complete(
@@ -353,19 +433,14 @@ export async function uploadRoute(
         actor,
         uploadSchema.parse(JSON.parse(row.input)),
         row.object_key,
-        id,
+        { uploadId: id },
       );
-      await env.DB.prepare(
-        "UPDATE uploads SET status='ready',asset_id=?,updated_at=? WHERE id=? AND status='verifying'",
-      )
-        .bind(result.assetId, Date.now(), id)
-        .run();
       return json({ status: "ready", ...result });
     } catch (error) {
       const code = error instanceof HttpError ? error.code : "upload_failed";
       await env.DB.batch([
         env.DB.prepare(
-          "UPDATE uploads SET status='failed',error_code=?,updated_at=? WHERE id=? AND status!='cancelled'",
+          "UPDATE uploads SET status='failed',error_code=?,updated_at=? WHERE id=? AND status NOT IN ('cancelled','ready')",
         ).bind(code, Date.now(), id),
         env.DB.prepare("INSERT OR IGNORE INTO garbage(object_key,delete_after) VALUES (?,?)").bind(
           row.object_key,
@@ -434,11 +509,20 @@ export async function savePoster(request: Request, env: Env, actor: Actor, id: s
   const bytes = await readBytes(request, 2 * 1024 * 1024);
   sniffPoster(bytes, mime);
   const key = `v1/libraries/${actor.libraryId}/posters/${id}/${crypto.randomUUID()}`;
-  await env.MEDIA.put(key, bytes, { httpMetadata: { contentType: mime } });
-  await activeDevice(env, actor);
-  await env.DB.prepare("UPDATE assets SET poster_key=?,updated_at=? WHERE id=? AND library_id=?")
-    .bind(key, Date.now(), id, actor.libraryId)
+  await env.DB.prepare("INSERT OR IGNORE INTO garbage(object_key,delete_after) VALUES (?,?)")
+    .bind(key, Date.now() + 300_000)
     .run();
+  await env.MEDIA.put(key, bytes, { httpMetadata: { contentType: mime } });
+  const guard = publicationGuard(actor, {});
+  const written = await env.DB.prepare(
+    `UPDATE assets SET poster_key=?,updated_at=? WHERE id=? AND library_id=? AND ${guard.sql} AND EXISTS(SELECT 1 FROM garbage WHERE object_key=? AND delete_after>?)`,
+  )
+    .bind(key, Date.now(), id, actor.libraryId, ...guard.values, key, Date.now())
+    .run();
+  if (!written.meta.changes) {
+    await activeDevice(env, actor);
+    throw new HttpError(409, "poster_cancelled");
+  }
   if (asset.poster_key)
     await env.DB.prepare("INSERT OR IGNORE INTO garbage(object_key,delete_after) VALUES (?,?)")
       .bind(asset.poster_key, Date.now())

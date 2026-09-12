@@ -18,7 +18,7 @@
   "observability": { "enabled": true, "head_sampling_rate": 0.1 },
   "vars": {
     "ACCESS_TEAM_DOMAIN": "https://nocoo.cloudflareaccess.com",
-    "ACCESS_AUD": "unconfigured-fail-closed",
+    "ACCESS_AUD": "ea6297edaa67c77e284b40930d448a529452c0dc97eee1394f4082d2968a26a7",
     "APP_ORIGIN": "https://snail.hexly.ai"
   },
   "d1_databases": [{ "binding": "DB", "database_name": "snail", "migrations_dir": "migrations" }],

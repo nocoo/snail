@@ -10,6 +10,7 @@ export const categorySchema = z
 export const tagSchema = z.object({ name: nameSchema }).strict();
 export const titleSchema = z.string().trim().min(1).max(300);
 export const shaSchema = z.string().regex(/^[a-f0-9]{64}$/);
+export const jobClaimSchema = z.object({ id: idSchema, leaseId: idSchema }).strict();
 export const postIdSchema = z.string().regex(/^\d{15,22}$/);
 export const sourceUrlSchema = z
   .string()
@@ -28,6 +29,7 @@ export const importSchema = z
     width: z.number().int().positive().max(16384).optional(),
     height: z.number().int().positive().max(16384).optional(),
     approved: z.literal(true),
+    job: jobClaimSchema.optional(),
   })
   .strict()
   .refine((value) => value.sourceUrl.endsWith(`/status/${value.sourceId}`));
@@ -39,6 +41,7 @@ export const uploadSchema = z
     mime: z.enum(["video/mp4", "video/webm", "video/quicktime"]),
     sha256: shaSchema,
     approved: z.literal(true),
+    job: jobClaimSchema.optional(),
     duration: z.number().finite().nonnegative().max(86400).optional(),
     width: z.number().int().positive().max(16384).optional(),
     height: z.number().int().positive().max(16384).optional(),

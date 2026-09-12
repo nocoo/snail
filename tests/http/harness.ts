@@ -1,9 +1,19 @@
-import { readFile } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import { build } from "esbuild";
 import { exportJWK, generateKeyPair, SignJWT } from "jose";
-import { convertV4MiniflareOptions, Response as MfResponse, Miniflare } from "miniflare";
+import {
+  convertV4MiniflareOptions,
+  type Request as MfRequest,
+  Response as MfResponse,
+  Miniflare,
+} from "miniflare";
 
-export async function createHarness() {
+export async function createHarness(
+  options: {
+    assets?: string;
+    upstream?: (request: MfRequest) => Promise<MfResponse> | MfResponse;
+  } = {},
+) {
   const { privateKey, publicKey } = await generateKeyPair("RS256");
   const jwk = { ...(await exportJWK(publicKey)), kid: "test-key", alg: "RS256", use: "sig" };
   const output = await build({
@@ -19,34 +29,62 @@ export async function createHarness() {
   const mf = new Miniflare(
     convertV4MiniflareOptions({
       modules: true,
+      unsafeTriggerHandlers: true,
       script: output.outputFiles[0].text,
       compatibilityDate: "2026-09-12",
       compatibilityFlags: ["nodejs_compat"],
       d1Databases: ["DB"],
       r2Buckets: ["MEDIA"],
+      assets: options.assets
+        ? {
+            directory: options.assets,
+            binding: "ASSETS",
+            run_worker_first: true,
+            routerConfig: { has_user_worker: true },
+            assetConfig: { not_found_handling: "single-page-application" },
+          }
+        : undefined,
       bindings: {
         ACCESS_TEAM_DOMAIN: "https://test.cloudflareaccess.com",
         ACCESS_AUD: "snail-test-aud",
         APP_ORIGIN: "https://snail.test",
       },
       outboundService: async (request) => {
+        if (new URL(request.url).hostname === "cloudflare-dns.com")
+          return new MfResponse(
+            JSON.stringify({ Status: 0, Answer: [{ type: 1, data: "199.232.148.158" }] }),
+            {
+              headers: { "Content-Type": "application/dns-json" },
+            },
+          );
         if (new URL(request.url).pathname === "/cdn-cgi/access/certs")
           return new MfResponse(JSON.stringify({ keys: [jwk] }), {
             headers: { "Content-Type": "application/json" },
           });
-        return new MfResponse("Blocked test upstream", { status: 502 });
+        return options.upstream
+          ? options.upstream(request)
+          : new MfResponse("Blocked test upstream", { status: 502 });
       },
     }),
   );
   const db = await mf.getD1Database("DB");
-  const schema = await readFile("migrations/0001_library.sql", "utf8");
+  const schema = (
+    await Promise.all(
+      (
+        await readdir("migrations")
+      )
+        .filter((name) => name.endsWith(".sql"))
+        .sort()
+        .map((name) => readFile(`migrations/${name}`, "utf8")),
+    )
+  ).join("\n");
   for (const sql of schema
     .split(";")
     .map((s) => s.trim())
     .filter(Boolean))
     await db.prepare(sql).run();
   async function token(subject = "user-a") {
-    return new SignJWT({ email: `${subject}@example.test` })
+    return new SignJWT({ type: "app", email: `${subject}@example.test` })
       .setProtectedHeader({ alg: "RS256", kid: "test-key" })
       .setSubject(subject)
       .setIssuer("https://test.cloudflareaccess.com")
@@ -73,4 +111,44 @@ export async function createHarness() {
     });
   }
   return { mf, db, request, token, dispose: () => mf.dispose() };
+}
+
+export async function pairDevice(
+  h: Awaited<ReturnType<typeof createHarness>>,
+  scopes = ["media:write", "jobs:read"],
+  user = "user-a",
+) {
+  const pending = (await (
+    await h.request(
+      "/api/connector-pairings",
+      { method: "POST", body: JSON.stringify({ name: "Synthetic connector", scopes }) },
+      "",
+    )
+  ).json()) as { userCode: string; deviceCode: string };
+  const approved = await h.request(
+    "/api/me/connector-pairings/approve",
+    { method: "POST", body: JSON.stringify({ userCode: pending.userCode, scopes }) },
+    user,
+  );
+  if (approved.status !== 200) throw new Error("Test pairing approval failed");
+  const paired = (await (
+    await h.request(
+      "/api/connector-pairings/exchange",
+      { method: "POST", body: JSON.stringify({ deviceCode: pending.deviceCode }) },
+      "",
+    )
+  ).json()) as { deviceId: string; token: string };
+  return {
+    ...paired,
+    request: (path: string, body?: unknown, method?: string, extra?: Record<string, string>) =>
+      h.request(
+        `/api/connectors/me${path}`,
+        {
+          method: method ?? (body !== undefined ? "POST" : "GET"),
+          body: body === undefined ? undefined : JSON.stringify(body),
+          headers: { Authorization: `Bearer ${paired.token}`, ...extra },
+        },
+        "",
+      ),
+  };
 }

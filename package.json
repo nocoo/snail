@@ -14,14 +14,17 @@
     "typecheck": "tsc --noEmit && tsc -p worker/tsconfig.json --noEmit",
     "lint": "biome check --error-on-warnings .",
     "format": "biome check --write .",
-    "test": "vitest run",
+    "test": "bun run fixture && vitest run",
     "test:unit": "vitest run tests/unit",
     "test:http": "vitest run tests/http",
-    "test:e2e": "playwright test",
+    "test:e2e": "bun run fixture && playwright test",
     "types": "wrangler types worker/worker-configuration.d.ts",
     "worker:check": "wrangler deploy --dry-run --outdir .artifacts/worker",
     "check": "bun run typecheck && bun run lint && bun run test && bun run build && bun run worker:check",
-    "connector": "bun connector/cli.ts"
+    "connector": "bun connector/cli.ts",
+    "fixture": "bun scripts/synthetic-video.ts",
+    "research:check": "bun scripts/verify-research.ts",
+    "deploy": "wrangler d1 migrations apply snail --remote && wrangler deploy"
   },
   "dependencies": {
     "@fontsource-variable/space-grotesk": "5.3.0",
