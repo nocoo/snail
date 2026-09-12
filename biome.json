@@ -1,0 +1,19 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.12/schema.json",
+  "files": {
+    "includes": [
+      "**",
+      "!!worker/worker-configuration.d.ts",
+      "!!.artifacts",
+      "!!dist",
+      "!!coverage",
+      "!!bun.lock",
+      "!!docs",
+      "!!test-results",
+      "!!playwright-report"
+    ]
+  },
+  "formatter": { "indentStyle": "space", "indentWidth": 2, "lineWidth": 100 },
+  "linter": { "enabled": true, "rules": { "recommended": true } },
+  "javascript": { "formatter": { "quoteStyle": "double" } }
+}

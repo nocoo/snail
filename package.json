@@ -1,0 +1,50 @@
+{
+  "name": "snail",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "packageManager": "bun@1.4.0",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check --error-on-warnings .",
+    "format": "biome check --write .",
+    "test": "vitest run",
+    "test:unit": "vitest run tests/unit",
+    "test:http": "vitest run tests/http",
+    "test:e2e": "playwright test",
+    "types": "wrangler types worker/worker-configuration.d.ts",
+    "worker:check": "wrangler deploy --dry-run --outdir .artifacts/worker",
+    "check": "bun run typecheck && bun run lint && bun run test && bun run build && bun run worker:check",
+    "connector": "bun connector/cli.ts"
+  },
+  "dependencies": {
+    "@fontsource-variable/space-grotesk": "5.3.0",
+    "@noble/hashes": "2.4.0",
+    "@nocoo/basalt": "2.1.7",
+    "jose": "6.2.12",
+    "lucide-react": "1.44.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.12",
+    "@playwright/test": "1.63.0",
+    "@types/node": "22.20.2",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.7",
+    "@vitejs/plugin-react": "6.1.1",
+    "esbuild": "0.28.1",
+    "miniflare": "5.20260910.0-alpha",
+    "typescript": "7.0.2",
+    "vite": "8.2.2",
+    "vitest": "5.0.0",
+    "wrangler": "4.131.0"
+  }
+}

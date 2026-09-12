@@ -1,0 +1,27 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "snail",
+  "account_id": "d51a8fde361e4be31db17d8c56737c1f",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-09-12",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [{ "pattern": "snail.hexly.ai", "custom_domain": true }],
+  "version_metadata": { "binding": "VERSION_METADATA" },
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": true,
+    "not_found_handling": "single-page-application"
+  },
+  "observability": { "enabled": true, "head_sampling_rate": 0.1 },
+  "vars": {
+    "ACCESS_TEAM_DOMAIN": "https://nocoo.cloudflareaccess.com",
+    "ACCESS_AUD": "unconfigured-fail-closed",
+    "APP_ORIGIN": "https://snail.hexly.ai"
+  },
+  "d1_databases": [{ "binding": "DB", "database_name": "snail", "migrations_dir": "migrations" }],
+  "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "snail-private-media" }],
+  "triggers": { "crons": ["23 * * * *"] }
+}
