@@ -175,3 +175,13 @@ S7 同时发现 workerd 不接受 fetch `redirect: "error"`，最小 workerd 实
 - 视觉截图改为等待完整公共控件动画，稳定截图专项 8/8 通过；实际 HTTPS 开发站在 HTTP 套件之后再次加载与刷新，72 个依赖均 200、0 页面异常，5 个实际返回的品牌资源哈希与仓库相同，`/api/live` 与 `/api/me` 均 200，证据 `.artifacts/S19-local-final.json`。
 - 最后链接自查 RED 发现连接指南指向不存在的 README fragment；更正到实际 docs/13 文件。导航内部状态统一从浏览器 pathname 读取，保留查询串在地址栏；框架、长列表与交互最终专项 8/8 通过，日志 `.artifacts/S19-guide-red.log`、`.artifacts/S19-navigation-final.log`。
 - 独立只读 Codex 第三轮正式 Sign Off：针对 `2460db0` 之后的提交与最终工作树，无剩余 P0/P1/P2/P3。核对过 74 HTTP/单元、24 浏览器、8 视觉回归和开发 HTTPS 证据；未运行测试、未写文件。正式提交后的 CI 和真实生产复验继续由主 Codex 执行。
+
+## S20 · Basalt 与新品牌生产验收（2026-09-13）
+
+- 产品采用提交 `fdb205a920126b3353716a0e70c07d9aa447ba75` 已 push main；一并发布本机开发提交 `b4f2b8f` 与依赖缓存修复 `e4c50da`。CI `34727698138`、Deploy `34727772457` 均 success，Worker `b1751db9-2031-4ad7-ab05-a6dcdc1770ba`，远程无待应用迁移。推送首次遇到 SSH 连接关闭，正常重试成功；没有更改远端或绕过校验。
+- 最终本地 Worker dry-run 再次通过，证据 `.artifacts/S19-worker-final.log`。已提交的 55 个产品/品牌文件通过 staged gitleaks 与空白检查；74 单元/HTTP、24 桌面/手机和专项检查结果沿用 S19，远端 CI 对该产品提交完整执行通过。
+- 真实 Chrome 既有 Access 会话 `/api/me` 200；公开 `/api/live` 200 JSON，真实 D1/R2 均健康。匿名主页、用户身份和批准入口仍跳转 nocoo Access；live 后代与无凭据设备均为 JSON 401，`bun run production:check` 通过。证据 `.artifacts/S19-production-public.log`。
+- 真实生产 DOM：Sidebar 260px、AppHeader 56px，页面标题、GitHub、主题切换和无横向溢出检查通过；24px 透明新标记已加载，无滤镜、背景、阴影或圆角裁切。15 个站点品牌资源均 HTTP 200，实际返回 SHA-256 与采用文件一致，含三个导航 PNG、字标、ICO、Apple/PWA、许可和来源；品牌 provenance 为 2.0.0。
+- 既有获准 X 示例详情与收藏筛选均 200，API 和卡片均为已收藏；原 SHA-256、1,729,313 字节与既有证据一致。首尾 32 字节 Range 均 206，越界 416，JPEG 海报 200；实际产品预览播放推进，720×1280、readyState 4、无媒体错误。活动任务为 0；没有重新读取或导入其他书签。完整脱敏记录 `.artifacts/S19-production-smoke.json`，未保存生产私人画面或媒体。
+- 原 macOS Keychain 配对通过真实产品 `connector status` 心跳，返回 connected；没有轮换或撤销原设备。证据 `.artifacts/S19-connector-status.log`。开发 HTTPS 的 Vite 7051 仍监听，测试缓存与开发依赖隔离，保留 S19 的 72/72 依赖 200 实证。
+- 此处固定的是已经完成的产品提交与生产结果。后续验收文档提交保持产品字节一致，其 CI/Deploy 状态以对应 SHA 的 Actions 结果为准。
