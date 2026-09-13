@@ -9,8 +9,6 @@ export interface Actor {
   deviceId?: string;
 }
 interface UploadRow {
-  id: string;
-  library_id: string;
   device_id: string | null;
   object_key: string;
   multipart_id: string;
@@ -27,7 +25,6 @@ interface PartRow {
   part_number: number;
   etag: string;
   size: number;
-  sha256: string;
 }
 export const LIBRARY_QUOTA = 50 * 1024 * 1024 * 1024;
 

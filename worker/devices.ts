@@ -36,7 +36,6 @@ const heartbeatSchema = z
 interface Pairing {
   id: string;
   name: string;
-  user_code: string;
   requested_scopes: string;
   approved_scopes: string | null;
   library_id: string | null;
