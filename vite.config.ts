@@ -3,7 +3,8 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import { localApi } from "./scripts/local-api.ts";
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
+  cacheDir: mode === "test" ? ".artifacts/vite-http-cache" : "node_modules/.vite",
   plugins: [tailwindcss(), react(), localApi()],
   server: {
     port: 7051,
@@ -20,4 +21,4 @@ export default defineConfig({
     },
   },
   build: { target: "es2022", sourcemap: false },
-});
+}));

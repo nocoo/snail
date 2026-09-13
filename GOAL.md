@@ -161,3 +161,4 @@ S7 同时发现 workerd 不接受 fetch `redirect: "error"`，最小 workerd 实
 - 活动 Caddy 候选校验与 reload 成功；DNS 127.0.0.1、既有通配符证书可信，HTTP 301。实际 HTTPS `/api/live` 200 JSON 且 database/storage `ok`，`/api/me` 200；Chromium 页面渲染和 HMR connected，无异常，记录 `.artifacts/S18-local-browser.json`。一次配置重启期间的浏览器等待超时已保留，不将其写为首次通过。
 - 开发服务已经保持运行；运行方式与配置在 docs/18。类型检查通过，S17 首轮完整桌面/手机回归 18/18 通过；Basalt 视觉自查、独立 review 与全量发布检查仍在继续，不将其提前记为完成。
 - S18 全量单元/Worker HTTP 73/73、类型、Biome 和差异空白检查通过。开发代理为本地用途，真实生产验收不由上述测试替代。
+- 开发环境提交 `b4f2b8f` 后，用户报告 Basalt/React 模块 504。直接请求确认 `504 Outdated Optimize Dep`，根因是新增 HTTP 测试 Vite 与运行中的开发站共享优化缓存；并非 Caddy 网络超时。补充缓存保留回归 RED（文件被删除而 ENOENT）→测试模式独立 cacheDir→GREEN 3/3；日志 `.artifacts/S18-cache-{red,green}.log`。随后真实 HTTPS 浏览器连续打开与刷新，72 个依赖请求全部 200，HMR 正常、页面异常 0，证据 `.artifacts/S18-dependencies-browser.json`。

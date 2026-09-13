@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { createServer, type ViteDevServer } from "vite";
 import { afterEach, describe, expect, it } from "vitest";
 import { createHarness } from "./harness";
@@ -13,6 +13,26 @@ afterEach(async () => {
 });
 
 describe("local development", () => {
+  it("starting HTTP tests preserves the running development app's dependency cache", async () => {
+    const dependency = resolve(
+      `node_modules/.vite/deps/snail-cache-check-${crypto.randomUUID()}.js`,
+    );
+    await mkdir(resolve("node_modules/.vite/deps"), { recursive: true });
+    await writeFile(dependency, "export const retained = true;");
+    try {
+      server = await createServer({
+        mode: "test",
+        logLevel: "silent",
+        optimizeDeps: { force: true },
+        server: { port: 17051, strictPort: true, host: "127.0.0.1" },
+      });
+      await server.listen();
+      expect(await readFile(dependency, "utf8")).toBe("export const retained = true;");
+    } finally {
+      await rm(dependency, { force: true });
+    }
+  });
+
   it("serves the signed Worker API alongside Vite and rejects foreign browser requests", async () => {
     server = await createServer({
       logLevel: "silent",
