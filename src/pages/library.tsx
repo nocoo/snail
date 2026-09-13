@@ -1,12 +1,22 @@
 import {
+  Badge,
   Button,
+  Checkbox,
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
+  DialogHeader,
   DialogTitle,
+  Field,
   Input,
+  Label,
+  LayerCard,
+  TablePager,
 } from "@nocoo/basalt";
+import { Banner } from "@nocoo/basalt/components/banner";
 import { PageHeader } from "@nocoo/basalt/components/page-header";
+import { ToggleGroup, ToggleGroupItem } from "@nocoo/basalt/components/toggle-group";
 import {
   Bookmark,
   CheckSquare,
@@ -16,7 +26,6 @@ import {
   LayoutList,
   Link2,
   Plus,
-  Search,
   SlidersHorizontal,
   Trash2,
   Upload,
@@ -26,7 +35,9 @@ import { useState } from "react";
 import type { Asset } from "../../shared/types";
 import { AssetCard } from "../components/asset-card";
 import { AssetPreview } from "../components/asset-preview";
+import { OptionSelect } from "../components/option-select";
 import { api } from "../lib/api";
+import { useDialogFocus } from "../lib/use-dialog-focus";
 import type { Filters } from "../viewmodels/use-library";
 import { useLibrary } from "../viewmodels/use-library";
 
@@ -71,6 +82,9 @@ export function LibraryPage({
   const [importBusy, setImportBusy] = useState(false);
   const [batchCategory, setBatchCategory] = useState("");
   const [batchTag, setBatchTag] = useState("");
+  const [filtersOpen, setFiltersOpen] = useState(true);
+  const deleteFocus = useDialogFocus();
+  const importFocus = useDialogFocus();
   async function favorite(asset: Asset) {
     try {
       await api(`/api/assets/${asset.id}`, {
@@ -114,116 +128,134 @@ export function LibraryPage({
   const current =
     (cinema && library.items.find((item) => item.id === cinema.id)) || library.items[0];
   return (
-    <>
+    <div className="space-y-6">
       <PageHeader
         title={title}
         description={`${library.total} 个视频 · 留住值得再看的片刻`}
         actions={
           <>
             <Button
+              variant={filtersOpen ? "secondary" : "outline"}
+              icon={<SlidersHorizontal className="size-4" strokeWidth={1.5} />}
+              aria-expanded={filtersOpen}
+              aria-controls="library-filters"
+              onClick={() => setFiltersOpen((open) => !open)}
+            >
+              筛选
+            </Button>
+            <Button
               variant="outline"
-              icon={<Link2 size={16} />}
+              icon={<Link2 className="size-4" strokeWidth={1.5} />}
               onClick={() => setImportOpen(true)}
             >
               收藏链接
             </Button>
-            <Button icon={<Plus size={17} />} onClick={onUpload}>
+            <Button icon={<Plus className="size-4" strokeWidth={1.5} />} onClick={onUpload}>
               上传视频
             </Button>
           </>
         }
-        filters={
-          <div className="library-filters">
-            <div className="search-field">
-              <Search size={17} />
+      />
+      {filtersOpen && (
+        <LayerCard id="library-filters" role="region" aria-label="视频筛选">
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+            <Field label="搜索" htmlFor="library-search" className="col-span-2 lg:col-span-1">
               <Input
+                id="library-search"
                 placeholder="搜索标题、笔记或标签…"
                 value={filters.q}
                 onChange={(event) => onFilters({ q: event.target.value, page: 1 })}
                 aria-label="搜索视频"
               />
-            </div>
-            <select
-              aria-label="筛选分类"
-              value={filters.category}
-              onChange={(event) => onFilters({ category: event.target.value, page: 1 })}
-            >
-              <option value="">所有分类</option>
-              <option value="uncategorized">未分类</option>
-              {library.categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-            <select
-              aria-label="筛选标签"
-              value={filters.tag}
-              onChange={(event) => onFilters({ tag: event.target.value, page: 1 })}
-            >
-              <option value="">所有标签</option>
-              {library.tags.map((tag) => (
-                <option key={tag.id} value={tag.id}>
-                  {tag.name}
-                </option>
-              ))}
-            </select>
-            <select
-              aria-label="视频排序"
-              value={filters.sort}
-              onChange={(event) => onFilters({ sort: event.target.value, page: 1 })}
-            >
-              <option value="newest">最新收藏</option>
-              <option value="oldest">最早收藏</option>
-              <option value="title">标题 A–Z</option>
-              <option value="duration">时长优先</option>
-              <option value="size">文件大小</option>
-            </select>
+            </Field>
+            <Field label="分类" htmlFor="library-category">
+              <OptionSelect
+                id="library-category"
+                aria-label="筛选分类"
+                value={filters.category}
+                onValueChange={(category) => onFilters({ category, page: 1 })}
+                options={[
+                  { value: "", label: "所有分类" },
+                  { value: "uncategorized", label: "未分类" },
+                  ...library.categories.map((item) => ({ value: item.id, label: item.name })),
+                ]}
+              />
+            </Field>
+            <Field label="标签" htmlFor="library-tag">
+              <OptionSelect
+                id="library-tag"
+                aria-label="筛选标签"
+                value={filters.tag}
+                onValueChange={(tag) => onFilters({ tag, page: 1 })}
+                options={[
+                  { value: "", label: "所有标签" },
+                  ...library.tags.map((item) => ({ value: item.id, label: item.name })),
+                ]}
+              />
+            </Field>
+            <Field label="排序" htmlFor="library-sort" className="col-span-2 lg:col-span-1">
+              <OptionSelect
+                id="library-sort"
+                aria-label="视频排序"
+                value={filters.sort}
+                onValueChange={(sort) => onFilters({ sort, page: 1 })}
+                options={[
+                  { value: "newest", label: "最新收藏" },
+                  { value: "oldest", label: "最早收藏" },
+                  { value: "title", label: "标题 A–Z" },
+                  { value: "duration", label: "时长优先" },
+                  { value: "size", label: "文件大小" },
+                ]}
+              />
+            </Field>
           </div>
-        }
-      />
-      <div className="library-toolbar">
-        <div className="toolbar-left">
+        </LayerCard>
+      )}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
           <Button
             variant="ghost"
             size="sm"
-            icon={<CheckSquare size={16} />}
+            icon={<CheckSquare className="size-4" strokeWidth={1.5} />}
             onClick={() => setSelected(selected.length ? [] : library.items.map((item) => item.id))}
           >
             {selected.length ? `已选 ${selected.length}` : "选择"}
           </Button>
-          <span className="saved-note">
-            <span className="status-dot" />
+          <Badge variant="secondary" className="hidden sm:inline-flex">
             私人资料库
-          </span>
+          </Badge>
         </div>
-        <fieldset className="layout-switch" aria-label="视频布局">
+        <ToggleGroup
+          type="single"
+          value={layout}
+          aria-label="视频布局"
+          onValueChange={(value) => {
+            if (!value) return;
+            setLayout(value as Layout);
+            try {
+              localStorage.setItem("snail-layout", value);
+            } catch {}
+          }}
+        >
           {layouts.map((item) => (
-            <button
-              type="button"
+            <ToggleGroupItem
               key={item.id}
+              value={item.id}
               title={item.label}
               aria-label={`${item.label}布局`}
-              aria-pressed={layout === item.id}
-              onClick={() => {
-                setLayout(item.id);
-                try {
-                  localStorage.setItem("snail-layout", item.id);
-                } catch {}
-              }}
             >
-              <item.icon size={17} />
-            </button>
+              <item.icon className="size-4" strokeWidth={1.5} aria-hidden="true" />
+            </ToggleGroupItem>
           ))}
-        </fieldset>
+        </ToggleGroup>
       </div>
       {selected.length > 0 && (
-        <fieldset className="bulk-toolbar" aria-label="批量操作">
-          <strong>{selected.length} 个视频</strong>
+        <LayerCard role="group" aria-label="批量操作" className="flex flex-wrap items-center gap-2">
+          <strong className="text-sm">{selected.length} 个视频</strong>
           <Button
             size="sm"
             variant="secondary"
-            icon={<Heart size={15} />}
+            icon={<Heart className="size-4" strokeWidth={1.5} />}
             onClick={() => void bulk("favorite")}
             loading={busy}
           >
@@ -232,18 +264,17 @@ export function LibraryPage({
           <Button size="sm" variant="ghost" onClick={() => void bulk("unfavorite")} disabled={busy}>
             取消收藏
           </Button>
-          <select
+          <OptionSelect
             aria-label="批量分类"
+            size="sm"
+            className="w-40"
             value={batchCategory}
-            onChange={(event) => setBatchCategory(event.target.value)}
-          >
-            <option value="">未分类</option>
-            {library.categories.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.name}
-              </option>
-            ))}
-          </select>
+            onValueChange={setBatchCategory}
+            options={[
+              { value: "", label: "未分类" },
+              ...library.categories.map((item) => ({ value: item.id, label: item.name })),
+            ]}
+          />
           <Button
             size="sm"
             variant="outline"
@@ -252,18 +283,17 @@ export function LibraryPage({
           >
             移动
           </Button>
-          <select
+          <OptionSelect
             aria-label="批量标签"
+            size="sm"
+            className="w-40"
             value={batchTag}
-            onChange={(event) => setBatchTag(event.target.value)}
-          >
-            <option value="">选择标签</option>
-            {library.tags.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.name}
-              </option>
-            ))}
-          </select>
+            onValueChange={setBatchTag}
+            options={[
+              { value: "", label: "选择标签" },
+              ...library.tags.map((item) => ({ value: item.id, label: item.name })),
+            ]}
+          />
           <Button
             size="sm"
             variant="outline"
@@ -275,52 +305,59 @@ export function LibraryPage({
           <Button
             size="sm"
             variant="ghost"
-            icon={<Trash2 size={15} />}
+            icon={<Trash2 className="size-4" strokeWidth={1.5} />}
             onClick={() => setDeleteOpen(true)}
             disabled={busy}
           >
             删除
           </Button>
           <Button variant="ghost" size="icon" aria-label="取消选择" onClick={() => setSelected([])}>
-            <X size={16} />
+            <X className="size-4" strokeWidth={1.5} />
           </Button>
-        </fieldset>
+        </LayerCard>
       )}
       {(message || library.error) && (
-        <p role={library.error ? "alert" : "status"} className="notice">
-          {library.error || message}
-          {library.error && (
-            <Button size="sm" variant="ghost" onClick={() => void library.refresh()}>
-              重试
-            </Button>
-          )}
-        </p>
+        <Banner
+          variant={library.error ? "error" : "secondary"}
+          role={library.error ? "alert" : "status"}
+          size="sm"
+          description={library.error || message}
+          action={
+            library.error ? (
+              <Banner.Action onClick={() => void library.refresh()}>重试</Banner.Action>
+            ) : undefined
+          }
+        />
       )}
       {library.loading && !library.items.length ? (
-        <div className="empty-state" role="status">
-          正在打开资料库…
-        </div>
+        <LayerCard>
+          <LayerCard.Loading label="正在打开资料库…" />
+        </LayerCard>
       ) : !library.items.length ? (
-        <div className="empty-state">
-          <div className="empty-symbol">
-            <Bookmark size={38} strokeWidth={1.2} />
-          </div>
-          <span className="eyebrow">A PLACE FOR YOUR FAVORITES</span>
-          <h2>
-            {filters.q || filters.category || filters.tag || filters.favorite
-              ? "还没有匹配的视频"
-              : "好片段，慢慢收藏。"}
-          </h2>
-          <p>
-            {filters.q || filters.category || filters.tag || filters.favorite
-              ? "试试其他关键词，或调整筛选条件。"
-              : "把喜欢的视频放在一起。上传、整理，然后随时回来看看。"}
-          </p>
-          <Button icon={<Upload size={16} />} onClick={onUpload}>
-            上传第一个视频
-          </Button>
-          <span className="muted empty-hint">MP4 / WebM / MOV · 每个视频最大 512 MiB</span>
-        </div>
+        <LayerCard>
+          <LayerCard.Empty
+            icon={<Bookmark className="size-8" strokeWidth={1.5} />}
+            title={
+              filters.q || filters.category || filters.tag || filters.favorite
+                ? "还没有匹配的视频"
+                : "好片段，慢慢收藏。"
+            }
+            description={
+              filters.q || filters.category || filters.tag || filters.favorite
+                ? "试试其他关键词，或调整筛选条件。"
+                : "把喜欢的视频放在一起。上传、整理，然后随时回来看看。"
+            }
+            action={
+              <Button icon={<Upload className="size-4" strokeWidth={1.5} />} onClick={onUpload}>
+                上传第一个视频
+              </Button>
+            }
+          >
+            <p className="text-xs text-basalt-muted-foreground">
+              MP4 / WebM / MOV · 每个视频最大 512 MiB
+            </p>
+          </LayerCard.Empty>
+        </LayerCard>
       ) : (
         <section
           data-layout={layout}
@@ -328,8 +365,8 @@ export function LibraryPage({
           aria-label="视频资料库"
         >
           {layout === "cinema" && current && (
-            <div className="cinema-player">
-              <div className="cinema-stage">
+            <LayerCard className="mb-4">
+              <LayerCard.Well className="cinema-stage p-0">
                 {/* biome-ignore lint/a11y/useMediaCaption: User-owned originals may not contain captions; no fabricated caption track. */}
                 <video
                   key={current.id}
@@ -339,14 +376,14 @@ export function LibraryPage({
                   src={`/api/assets/${current.id}/media`}
                   poster={current.hasPoster ? `/api/assets/${current.id}/poster` : undefined}
                 />
-              </div>
-              <div className="cinema-heading">
-                <h2>{current.title}</h2>
+              </LayerCard.Well>
+              <LayerCard.Footer className="justify-between">
+                <h2 className="min-w-0 flex-1 truncate text-sm font-medium">{current.title}</h2>
                 <Button variant="outline" size="sm" onClick={() => setPreview(current)}>
                   查看详情
                 </Button>
-              </div>
-            </div>
+              </LayerCard.Footer>
+            </LayerCard>
           )}
           <div className="asset-collection">
             {library.items.map((asset) => (
@@ -369,27 +406,17 @@ export function LibraryPage({
         </section>
       )}
       {library.total > library.limit && (
-        <div className="pagination">
-          <Button
-            variant="outline"
-            disabled={filters.page <= 1}
-            onClick={() => onFilters({ page: filters.page - 1 })}
-          >
-            上一页
-          </Button>
-          <span>
-            {filters.page} / {Math.ceil(library.total / library.limit)}
-          </span>
-          <Button
-            variant="outline"
-            disabled={filters.page * library.limit >= library.total}
-            onClick={() => onFilters({ page: filters.page + 1 })}
-          >
-            下一页
-          </Button>
-        </div>
+        <TablePager
+          page={filters.page}
+          pageSize={library.limit}
+          totalCount={library.total}
+          onPageChange={(page) => onFilters({ page })}
+          formatRange={({ start, end, totalCount }) => `${start}–${end} / ${totalCount} 个视频`}
+        />
       )}
-      <p className="library-footnote">仅保存你拥有或获准保存的内容。视频保持私有，可随时删除。</p>
+      <p className="text-center text-xs text-basalt-muted-foreground">
+        仅保存你拥有或获准保存的内容。视频保持私有，可随时删除。
+      </p>
       <AssetPreview
         asset={preview}
         categories={library.categories}
@@ -398,29 +425,32 @@ export function LibraryPage({
         onSaved={() => void library.refresh()}
       />
       <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-        <DialogContent>
-          <DialogTitle>删除这 {selected.length} 个视频？</DialogTitle>
-          <DialogDescription>
-            视频会立即从资料库移除，未被其他条目使用的文件将一并清理。此操作无法撤销。
-          </DialogDescription>
-          <div className="dialog-actions">
+        <DialogContent {...deleteFocus}>
+          <DialogHeader>
+            <DialogTitle>删除这 {selected.length} 个视频？</DialogTitle>
+            <DialogDescription>
+              视频会立即从资料库移除，未被其他条目使用的文件将一并清理。此操作无法撤销。
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
             <Button variant="outline" onClick={() => setDeleteOpen(false)}>
               保留视频
             </Button>
             <Button variant="destructive" loading={busy} onClick={() => void bulk("delete")}>
               确认删除
             </Button>
-          </div>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
       <Dialog open={importOpen} onOpenChange={setImportOpen}>
-        <DialogContent size="lg">
-          <DialogTitle>收藏 X 视频链接</DialogTitle>
-          <DialogDescription>
-            本机 Connector 会用已登录的浏览器解析这条帖子。电脑离线时，链接会留在队列中。
-          </DialogDescription>
-          <label className="field" htmlFor="import-url">
-            帖子链接
+        <DialogContent size="lg" className="space-y-5" {...importFocus}>
+          <DialogHeader>
+            <DialogTitle>收藏 X 视频链接</DialogTitle>
+            <DialogDescription>
+              本机 Connector 会用已登录的浏览器解析这条帖子。电脑离线时，链接会留在队列中。
+            </DialogDescription>
+          </DialogHeader>
+          <Field label="帖子链接" htmlFor="import-url">
             <Input
               id="import-url"
               value={url}
@@ -428,17 +458,19 @@ export function LibraryPage({
               placeholder="https://x.com/…/status/…"
               aria-label="X 帖子链接"
             />
-          </label>
-          <label className="consent">
-            <input
-              type="checkbox"
+          </Field>
+          <div className="flex items-start gap-2">
+            <Checkbox
+              id="import-consent"
               checked={approved}
-              onChange={(event) => setApproved(event.target.checked)}
+              onCheckedChange={(checked) => setApproved(checked === true)}
             />
-            我拥有或已获准保存这条视频。
-          </label>
-          {message && <p role="status">{message}</p>}
-          <div className="dialog-actions">
+            <Label htmlFor="import-consent" className="leading-5">
+              我拥有或已获准保存这条视频。
+            </Label>
+          </div>
+          {message && <Banner variant="secondary" role="status" size="sm" description={message} />}
+          <DialogFooter>
             <Button variant="outline" onClick={() => setImportOpen(false)}>
               取消
             </Button>
@@ -449,9 +481,9 @@ export function LibraryPage({
             >
               加入导入队列
             </Button>
-          </div>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 }

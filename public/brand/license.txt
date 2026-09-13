@@ -1,3 +1,49 @@
+Snail brand assets 2.0.0 — source and license notices
+
+1. Generated raster artwork
+
+The animal and wide hero were generated on 2026-09-13 using the owner's
+configured Azure OpenAI gpt-image-2 deployment, via the v1 images/edits API.
+These are model outputs, not hand-drawn illustrations or native SVG artwork.
+The exact prompts, ordered reference hashes, actual request IDs, sanitized
+responses and untouched native PNG/C2PA files are preserved in the source
+repository. provenance.json identifies the six requests and selected outputs.
+
+Copyright 2026 Zheng Li, to the extent rights exist and are held by the owner.
+Any owner-held rights in these selected outputs and their documented derivatives
+are licensed under the MIT text below. This notice makes no claim that all
+jurisdictions grant copyright in generated material, that an output is unique,
+or that Microsoft/OpenAI has assigned third-party trademark rights. Use remains
+subject to the applicable Azure service agreement and third-party rights.
+
+Provider terms reference (not a statement of legal review or a separate license):
+https://www.microsoft.com/licensing/terms/productoffering/MicrosoftAzure/all
+
+2. Authored supporting work
+
+Original export code, specimen layouts, seamless spiral/trail SVG texture and
+associated documentation: Copyright 2026 Zheng Li, MIT (below). The texture is
+authored geometry, not an animal tracing. Wordmark SVGs are unchanged licensed
+font outlines. Raster lockups combine that wordmark with the generated animal.
+No SVG animal or vectorized animal is delivered in this version.
+
+3. Font
+
+Space Grotesk, unmodified @fontsource-variable/space-grotesk 5.3.0 resource.
+The original copyright notices and SIL Open Font License 1.1 are reproduced in
+space-grotesk-ofl.txt. The font and outlined glyphs retain those terms. MIT does
+not replace the font license; do not remove its notices when redistributing.
+
+4. Reference and family assets
+
+The official Hexly endorsement mark and Space Grotesk resources are copied
+byte-for-byte from the archived v1.0.0 kit. Frogie finishing 02, Pew finishing 04
+and Ocelot finishing 03 were submitted as the owner's existing family references.
+Ordered source paths, bytes and SHA-256 are recorded for every request. Neither
+Eagle artwork nor the rejected Snail v1 mark was submitted to the image model.
+Reference files retain their own archived provenance; they are not newly authored
+or licensed by this Snail generation. The rejected v1 kit remains immutable.
+
 MIT License
 
 Copyright (c) 2026 Zheng Li

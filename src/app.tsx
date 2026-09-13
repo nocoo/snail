@@ -1,29 +1,31 @@
 import {
   Button,
   ContentIsland,
+  Input,
+  LayerCard,
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetTitle,
-  Sidebar,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarItem,
-  SidebarNav,
-  SidebarPartition,
   ThemeToggle,
 } from "@nocoo/basalt";
 import { AppHeader } from "@nocoo/basalt/components/app-header";
 import { AppMain, AppShell, AppSkipLink } from "@nocoo/basalt/components/app-shell";
+import { LoadingScreen } from "@nocoo/basalt/components/loading-screen";
 import { Bookmark, Folder, Heart, LibraryBig, Link2, Menu, Settings2, Upload } from "lucide-react";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { version } from "../package.json";
 import type { Category, UploadProgress } from "../shared/types";
+import { NavigationContext } from "./components/app-link";
+import { AppSidebar, type NavigationGroup } from "./components/app-sidebar";
+import { BrandMark } from "./components/brand";
+import { GithubMark } from "./components/github-mark";
 import { UploadTray } from "./components/upload-tray";
 import { api } from "./lib/api";
 import { uploadFile } from "./lib/upload";
 import { ConnectPage } from "./pages/connect";
 import { LibraryPage } from "./pages/library";
 import { SettingsPage } from "./pages/settings";
+import { SignInPage } from "./pages/sign-in";
 import type { Filters } from "./viewmodels/use-library";
 
 function useMobile() {
@@ -38,9 +40,11 @@ function useMobile() {
     () => false,
   );
 }
+
 export function App() {
   const mobile = useMobile();
   const [path, setPath] = useState(location.pathname);
+  const [collapsed, setCollapsed] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
   const [identity, setIdentity] = useState<{ email: string } | null>(null);
   const [authError, setAuthError] = useState("");
@@ -57,13 +61,28 @@ export function App() {
   const [uploads, setUploads] = useState<UploadProgress[]>([]);
   const [dragging, setDragging] = useState(false);
   const input = useRef<HTMLInputElement>(null);
+  const menu = useRef<HTMLButtonElement>(null);
   const controllers = useRef(new Map<string, AbortController>());
   const refresh = useCallback(() => setRevision((value) => value + 1), []);
   useEffect(() => {
-    const changed = () => setPath(location.pathname);
+    const changed = () => {
+      setPath(location.pathname);
+      setNavOpen(false);
+    };
     addEventListener("popstate", changed);
     return () => removeEventListener("popstate", changed);
   }, []);
+  useEffect(() => {
+    if (!mobile) setNavOpen(false);
+  }, [mobile]);
+  useEffect(() => {
+    if (!mobile || !navOpen) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [mobile, navOpen]);
   useEffect(() => {
     void api<{ email: string }>("/api/me")
       .then(setIdentity)
@@ -77,7 +96,7 @@ export function App() {
   }, [revision]);
   function navigate(next: string, patch?: Partial<Filters>) {
     history.pushState(null, "", next);
-    setPath(next);
+    setPath(location.pathname);
     setNavOpen(false);
     if (patch) setFilters((current) => ({ ...current, ...patch, page: 1 }));
   }
@@ -109,242 +128,207 @@ export function App() {
           : filters.category
             ? (categories.find((item) => item.id === filters.category)?.name ?? "未分类")
             : "全部视频";
-  const brand = (
-    <div className="snail-brand">
-      <span className="brand-mark" aria-hidden="true">
-        <img
-          data-brand-mark
-          className="theme-light-only"
-          src="/brand/mark-light.svg"
-          width="24"
-          height="24"
-          alt=""
-        />
-        <img
-          data-brand-mark
-          className="theme-dark-only"
-          src="/brand/mark-dark.svg"
-          width="24"
-          height="24"
-          alt=""
-        />
-      </span>
-      <span className="brand-wordmark">
-        <img
-          className="theme-light-only"
-          src="/brand/wordmark-light.svg"
-          width="80"
-          height="40"
-          alt="Snail"
-        />
-        <img
-          className="theme-dark-only"
-          src="/brand/wordmark-dark.svg"
-          width="80"
-          height="40"
-          alt="Snail"
-        />
-      </span>
-      <span className="version-pill">{version}</span>
-    </div>
-  );
-  const navigation = (
-    <>
-      <SidebarItem
-        active={section === "library" && !filters.favorite && !filters.category}
-        onClick={() => navigate("/", { favorite: false, category: "" })}
-      >
-        <LibraryBig size={18} />
-        <span>全部视频</span>
-      </SidebarItem>
-      <SidebarItem
-        active={section === "library" && filters.favorite}
-        onClick={() => navigate("/", { favorite: true, category: "" })}
-      >
-        <Heart size={18} />
-        <span>我的收藏</span>
-      </SidebarItem>
-      <SidebarItem
-        active={section === "library" && filters.category === "uncategorized"}
-        onClick={() => navigate("/", { favorite: false, category: "uncategorized" })}
-      >
-        <Bookmark size={18} />
-        <span>未分类</span>
-      </SidebarItem>
-      <SidebarPartition>分类</SidebarPartition>
-      {categories.length ? (
-        categories.map((category) => (
-          <SidebarItem
-            key={category.id}
-            active={section === "library" && filters.category === category.id}
-            onClick={() => navigate("/", { favorite: false, category: category.id })}
-          >
-            <Folder size={17} />
-            <span>
-              {category.parentId ? "↳ " : ""}
-              {category.name}
-            </span>
-          </SidebarItem>
-        ))
-      ) : (
-        <p className="nav-hint">在整理中创建第一个分类</p>
-      )}
-      <SidebarPartition>工作台</SidebarPartition>
-      <SidebarItem active={section === "connect"} onClick={() => navigate("/connect")}>
-        <Link2 size={18} />
-        <span>连接本机</span>
-      </SidebarItem>
-      <SidebarItem active={section === "settings"} onClick={() => navigate("/settings")}>
-        <Settings2 size={18} />
-        <span>整理与设置</span>
-      </SidebarItem>
-    </>
-  );
-  if (authError)
-    return (
-      <div className="login-state">
-        {brand}
-        <h1>你的私人视频库</h1>
-        <p role="alert">{authError}</p>
-        <Button onClick={() => location.assign("/cdn-cgi/access/login?redirect_url=%2F")}>
-          登录 Snail
-        </Button>
-      </div>
-    );
-  if (!identity)
-    return (
-      <div className="login-state" role="status">
-        {brand}
-        <p>正在打开 Snail…</p>
-      </div>
-    );
+  const groups: NavigationGroup[] = [
+    {
+      label: "资料库",
+      items: [
+        {
+          id: "all",
+          label: "全部视频",
+          icon: LibraryBig,
+          active: section === "library" && !filters.favorite && !filters.category,
+          onClick: () => navigate("/", { favorite: false, category: "" }),
+        },
+        {
+          id: "favorites",
+          label: "我的收藏",
+          icon: Heart,
+          active: section === "library" && filters.favorite,
+          onClick: () => navigate("/", { favorite: true, category: "" }),
+        },
+        {
+          id: "uncategorized",
+          label: "未分类",
+          icon: Bookmark,
+          active: section === "library" && filters.category === "uncategorized",
+          onClick: () => navigate("/", { favorite: false, category: "uncategorized" }),
+        },
+      ],
+    },
+    {
+      label: "分类",
+      items: categories.map((category) => ({
+        id: category.id,
+        label: `${category.parentId ? "↳ " : ""}${category.name}`,
+        icon: Folder,
+        active: section === "library" && filters.category === category.id,
+        onClick: () => navigate("/", { favorite: false, category: category.id }),
+      })),
+    },
+    {
+      label: "工作台",
+      items: [
+        {
+          id: "connect",
+          label: "连接本机",
+          icon: Link2,
+          active: section === "connect",
+          onClick: () => navigate("/connect"),
+        },
+        {
+          id: "settings",
+          label: "整理与设置",
+          icon: Settings2,
+          active: section === "settings",
+          onClick: () => navigate("/settings"),
+        },
+      ],
+    },
+  ];
+  if (authError) return <SignInPage error={authError} />;
+  if (!identity) return <LoadingScreen label="正在打开 Snail…" mark={<BrandMark size={32} />} />;
   return (
-    <AppShell
-      className="relative"
-      onDragOver={(event) => {
-        if (event.dataTransfer.types.includes("Files")) {
-          event.preventDefault();
-          setDragging(true);
-        }
-      }}
-      onDragLeave={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget as Node)) setDragging(false);
-      }}
-      onDrop={(event) => {
-        event.preventDefault();
-        setDragging(false);
-        void acceptFiles(event.dataTransfer.files);
-      }}
+    <NavigationContext.Provider
+      value={(next) =>
+        navigate(next, next === "/" ? { favorite: false, category: "", q: "", tag: "" } : undefined)
+      }
     >
-      <AppSkipLink>跳转到资料库</AppSkipLink>
-      {!mobile && (
-        <Sidebar>
-          <SidebarHeader className="snail-sidebar-heading">
-            {brand}
-            <span className="brand-caption">YOUR PRIVATE VIDEO LIBRARY</span>
-          </SidebarHeader>
-          <SidebarNav>{navigation}</SidebarNav>
-          <SidebarFooter>
-            <div className="sidebar-bottom">
-              <span className="status-dot" />
-              <span>只属于你的收藏</span>
-            </div>
-            <span className="sidebar-account" title={identity.email}>
-              {identity.email}
-            </span>
-          </SidebarFooter>
-        </Sidebar>
-      )}
-      <Sheet open={navOpen} onOpenChange={setNavOpen}>
-        <SheetContent side="left" className="mobile-navigation">
-          <SheetTitle>{brand}</SheetTitle>
-          <nav aria-label="主导航">{navigation}</nav>
-        </SheetContent>
-      </Sheet>
-      <AppMain id="main-content">
-        <AppHeader
-          title={title}
-          leading={
-            mobile ? (
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label="打开导航"
-                onClick={() => setNavOpen(true)}
-              >
-                <Menu size={20} />
-              </Button>
-            ) : undefined
+      <AppShell
+        className="relative"
+        onDragOver={(event) => {
+          if (event.dataTransfer.types.includes("Files")) {
+            event.preventDefault();
+            setDragging(true);
           }
-          actions={
-            <>
-              <span className="header-wordmark brand-wordmark">
-                <img
-                  className="theme-light-only"
-                  src="/brand/wordmark-light.svg"
-                  width="72"
-                  height="36"
-                  alt="Snail"
+        }}
+        onDragLeave={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget as Node)) setDragging(false);
+        }}
+        onDrop={(event) => {
+          event.preventDefault();
+          setDragging(false);
+          void acceptFiles(event.dataTransfer.files);
+        }}
+      >
+        <AppSkipLink>跳转到资料库</AppSkipLink>
+        {!mobile && (
+          <AppSidebar
+            collapsed={collapsed}
+            onToggle={() => setCollapsed((value) => !value)}
+            email={identity.email}
+            groups={groups}
+          />
+        )}
+        {mobile && (
+          <Sheet open={navOpen} onOpenChange={setNavOpen}>
+            <SheetContent
+              side="left"
+              className="w-[260px] max-w-[260px] border-0 bg-basalt-background p-0"
+              onCloseAutoFocus={(event) => {
+                event.preventDefault();
+                menu.current?.focus();
+              }}
+            >
+              <SheetTitle className="sr-only">主导航</SheetTitle>
+              <SheetDescription className="sr-only">
+                选择资料库、分类或工作台页面。
+              </SheetDescription>
+              <AppSidebar
+                collapsed={false}
+                toggleLabel="关闭导航"
+                onToggle={() => setNavOpen(false)}
+                email={identity.email}
+                groups={groups}
+              />
+            </SheetContent>
+          </Sheet>
+        )}
+        <AppMain id="main-content" tabIndex={-1}>
+          <AppHeader
+            title={title}
+            breadcrumbs={title === "全部视频" ? undefined : [{ href: "/", label: "资料库" }]}
+            leading={
+              mobile ? (
+                <Button
+                  ref={menu}
+                  variant="ghost"
+                  size="icon"
+                  className="size-8"
+                  aria-label="打开导航"
+                  aria-expanded={navOpen}
+                  onClick={() => setNavOpen(true)}
+                >
+                  <Menu className="size-5" strokeWidth={1.5} aria-hidden="true" />
+                </Button>
+              ) : undefined
+            }
+            actions={
+              <>
+                <Button variant="ghost" size="icon" asChild>
+                  <a
+                    href="https://github.com/nocoo/snail"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="GitHub 仓库"
+                  >
+                    <GithubMark className="size-[18px]" />
+                  </a>
+                </Button>
+                <ThemeToggle aria-label="切换外观" />
+              </>
+            }
+          />
+          <div className="flex min-h-0 flex-1 flex-col px-2 pb-2 md:px-3 md:pb-3">
+            <ContentIsland className="relative">
+              {section === "library" ? (
+                <LibraryPage
+                  revision={revision}
+                  filters={filters}
+                  onFilters={(patch) => setFilters((current) => ({ ...current, ...patch }))}
+                  title={title}
+                  onUpload={() => input.current?.click()}
                 />
-                <img
-                  className="theme-dark-only"
-                  src="/brand/wordmark-dark.svg"
-                  width="72"
-                  height="36"
-                  alt="Snail"
-                />
-              </span>
-              <ThemeToggle aria-label="切换外观" />
-            </>
+              ) : section === "connect" ? (
+                <ConnectPage />
+              ) : (
+                <SettingsPage onChanged={refresh} />
+              )}
+            </ContentIsland>
+          </div>
+        </AppMain>
+        <Input
+          ref={input}
+          className="hidden"
+          type="file"
+          accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov"
+          multiple
+          aria-label="上传视频文件"
+          onChange={(event) => {
+            if (event.target.files) void acceptFiles(event.target.files);
+            event.target.value = "";
+          }}
+        />
+        {dragging && (
+          <LayerCard
+            className="pointer-events-none fixed inset-3 z-60 flex flex-col items-center justify-center gap-4"
+            outlined
+          >
+            <Upload className="size-10 text-basalt-primary" strokeWidth={1.5} aria-hidden="true" />
+            <h2 className="text-xl font-semibold">放下视频，开始收藏。</h2>
+            <p className="text-sm text-basalt-muted-foreground">仅保存你拥有或获准保存的视频</p>
+          </LayerCard>
+        )}
+        <UploadTray
+          items={uploads}
+          onPause={(id) => controllers.current.get(id)?.abort()}
+          onRetry={(item) => void runUpload(item.file, item.id)}
+          onDismiss={() =>
+            setUploads((items) =>
+              items.filter((item) => !["ready", "failed", "paused"].includes(item.phase)),
+            )
           }
         />
-        <div className="island-wrap">
-          <ContentIsland className="snail-island">
-            {section === "library" ? (
-              <LibraryPage
-                revision={revision}
-                filters={filters}
-                onFilters={(patch) => setFilters((current) => ({ ...current, ...patch }))}
-                title={title}
-                onUpload={() => input.current?.click()}
-              />
-            ) : section === "connect" ? (
-              <ConnectPage />
-            ) : (
-              <SettingsPage onChanged={refresh} />
-            )}
-          </ContentIsland>
-        </div>
-      </AppMain>
-      <input
-        ref={input}
-        className="file-input"
-        type="file"
-        accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov"
-        multiple
-        aria-label="上传视频文件"
-        onChange={(event) => {
-          if (event.target.files) void acceptFiles(event.target.files);
-          event.target.value = "";
-        }}
-      />
-      {dragging && (
-        <div className="drop-overlay">
-          <Upload size={40} />
-          <h2>放下视频，开始收藏。</h2>
-          <p>仅保存你拥有或获准保存的视频</p>
-        </div>
-      )}
-      <UploadTray
-        items={uploads}
-        onPause={(id) => controllers.current.get(id)?.abort()}
-        onRetry={(item) => void runUpload(item.file, item.id)}
-        onDismiss={() =>
-          setUploads((items) =>
-            items.filter((item) => !["ready", "failed", "paused"].includes(item.phase)),
-          )
-        }
-      />
-    </AppShell>
+      </AppShell>
+    </NavigationContext.Provider>
   );
 }

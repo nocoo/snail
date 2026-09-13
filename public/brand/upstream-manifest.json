@@ -1,260 +1,307 @@
 {
 	"schemaVersion": 1,
 	"project": "snail",
-	"version": "1.0.0",
-	"method": "original-vector",
-	"designedAt": "2026-09-12",
+	"version": "2.0.0",
+	"method": "gpt-image-2",
+	"designedAt": "2026-09-13",
 	"canonical": "https://hexly.ai/projects/snail#brand",
-	"root": "https://hexly.ai/brands/snail/v1.0.0",
-	"source": "artwork/brands/snail/v1.0.0",
-	"brandBaseline": "a55baf21a2f0842c0580098e54d4479e41847593",
-	"font": {
-		"family": "Space Grotesk",
-		"weight": 600,
-		"package": "@fontsource-variable/space-grotesk@5.3.0",
-		"outlines": "Unmodified glyphs; site tracking -1/23 em",
-		"license": "SIL OFL 1.1"
-	},
-	"license": "MIT (original geometry and code); SIL OFL 1.1 (font)",
-	"sourceAdoption": "Separate from this Hexly publication; the Snail team integrates the pinned assets.",
+	"root": "https://hexly.ai/brands/snail/v2.0.0",
+	"source": "artwork/brands/snail/v2.0.0",
+	"brandBaseline": "352eb2652d4e11c876ef84152fc8e02f8d5ed331",
+	"license": "MIT for authored work and any owner-held generated-output rights; SIL OFL 1.1 for Space Grotesk; see license.txt",
+	"sourceAdoption": "Pending separate Snail integration; brand publication is independent of the application release",
 	"files": [
 		{
-			"path": "/brands/snail/v1.0.0/apple-touch-icon.png",
-			"role": "180px opaque Apple touch icon",
-			"bytes": 5361,
-			"sha256": "49a1cc4c9797cfa345250e565f5986f4739dfd2a3c416b43b73c7d6d94ef00cb"
+			"path": "/brands/snail/v2.0.0/apple-touch-icon.png",
+			"role": "180px opaque Apple touch presentation",
+			"bytes": 48179,
+			"sha256": "b7ee4d67bb32e2037a0b3b8cd23c1eafd735fd9ca3235e9ff28484c8ddd56643"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/favicon.ico",
-			"role": "Transparent terracotta fallback; 16/32/48/64/128/256px",
-			"bytes": 14549,
-			"sha256": "1940ad36930e36daa2bd65d65d63752b78956662aa663d021dc2781c53084ffc"
+			"path": "/brands/snail/v2.0.0/favicon.ico",
+			"role": "Real transparent PNG-backed ICO: 16/32/48/64/128/256px; same full animal",
+			"bytes": 91846,
+			"sha256": "a7218ef145b2dd4cf544a57bfabe8ce783cb0bcc6f92840f249b19de521f27b5"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/favicon.svg",
-			"role": "Adaptive browser favicon; no background tile",
-			"bytes": 719,
-			"sha256": "ad58b9a0d483ba1faee75d4307f6e4ad270e5a98fc0c3ee5179a954d28a28c43"
+			"path": "/brands/snail/v2.0.0/guide.md",
+			"role": "Brand usage, licensing, specimens and measured native colors",
+			"bytes": 9247,
+			"sha256": "d54297fb2bc6b694d93d8c2eed8e9e1dcb9629067cde526c5e298364995e3801"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/guide.md",
-			"role": "Brand usage, review and evidenced design tokens",
-			"bytes": 8092,
-			"sha256": "6c2bfefaabbe4b00f9ad151107e98eb1f595fb901749c1ea5b010cf2c7f53f40"
+			"path": "/brands/snail/v2.0.0/hero-square.webp",
+			"role": "Mobile hero from the separately generated square; no crop of the wide hero",
+			"bytes": 45678,
+			"sha256": "6d979ffc88dd65eefc5a44d0f54fa3bc1fb86c0e7222178d14f25b4a8c8ce605"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/hexly-mark.svg",
-			"role": "Unmodified official family geometry; endorsement only",
+			"path": "/brands/snail/v2.0.0/hero.png",
+			"role": "Untouched native 2560×1024 GPT Image hero; no cropping or compositing",
+			"bytes": 2938946,
+			"sha256": "5ed5d71d0de5064bdbe032db2a6ad99c2931fcc401b3f9a8e5c2282b1b54acba"
+		},
+		{
+			"path": "/brands/snail/v2.0.0/hero.webp",
+			"role": "Full native hero frame, optimized WebP",
+			"bytes": 130314,
+			"sha256": "2c1e04fcfb33da552bb27e72be67c7c0804906c7437e1ee61b1aabb7dfc331c7"
+		},
+		{
+			"path": "/brands/snail/v2.0.0/hexly-mark.svg",
+			"role": "Byte-preserved official Hexly/font resource from v1.0.0",
 			"bytes": 332,
 			"sha256": "07393a67ffd53e24b23b6ebf0752eb51ebe6de4c8b3d2f2f0b457d274696b787"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/icon-192.png",
-			"role": "192px application icon; purpose any",
-			"bytes": 5690,
-			"sha256": "37e282a0d0c7e5cdfdc2f93343c35852435a93dc3c8c77e1470d0d04ecbb9b8c"
+			"path": "/brands/snail/v2.0.0/icon-192.png",
+			"role": "192px PWA icon, purpose any",
+			"bytes": 54725,
+			"sha256": "302aa54ae27be115daec1c7cd2e370862d6e3d3f19fbe04af1c65d26ce5ff080"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/icon-dark-512.png",
-			"role": "512px application icon; purpose any",
-			"bytes": 21519,
-			"sha256": "07fbb765c7b2efa631dda492ed0ada0ab6a0780e9add9f3c8bbf585b2d68b4b3"
+			"path": "/brands/snail/v2.0.0/icon-dark-512.png",
+			"role": "512px square application icon",
+			"bytes": 205080,
+			"sha256": "daf1a95f545400e38688a6a3c6bde54d1a90ecd6244fcc18f4604695319d7a6e"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/icon-dark.svg",
-			"role": "Square presentation; platform supplies the mask",
-			"bytes": 593,
-			"sha256": "98eda49e8e29e3ae363461132d677418365748e72a46def7d3840cc14ea016e8"
+			"path": "/brands/snail/v2.0.0/icon-dark.png",
+			"role": "2048px square application presentation; platform supplies masking",
+			"bytes": 2644544,
+			"sha256": "b86ba101877bb4588644f03d442e9c5feb887af4865b5b6d7f5a70d9af77697a"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/icon-light-512.png",
-			"role": "512px application icon; purpose any",
-			"bytes": 21324,
-			"sha256": "fe1465736cd649c4c797f6361ad08bbca901bbd6eb780d0b26382992ede88c40"
+			"path": "/brands/snail/v2.0.0/icon-light-512.png",
+			"role": "512px square application icon",
+			"bytes": 293003,
+			"sha256": "3e34e422183ce82f5d9f21d9adaf3e8521d0ab80de60bd938fedfab0c7141acd"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/icon-light.svg",
-			"role": "Square presentation; platform supplies the mask",
-			"bytes": 593,
-			"sha256": "ce49b2a1661a6c62293789d3d32353a821bbc9f90d5dc7b3f11b95c6c2ec6e4b"
+			"path": "/brands/snail/v2.0.0/icon-light.png",
+			"role": "2048px square application presentation; platform supplies masking",
+			"bytes": 4087794,
+			"sha256": "951f1b055e205779d9ab9628f4b9cc0201f13caff37e4c822f3b6ce4da16e7a7"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/license.txt",
-			"role": "MIT license for the original Snail geometry and archive code",
-			"bytes": 1065,
-			"sha256": "4bd1de59e976f86422fbc5e08e3377823d6445db6854e20b737b777d0b7b2cb9"
+			"path": "/brands/snail/v2.0.0/icon-rounded.png",
+			"role": "Rounded large presentation; never use as a transparent navigation mark",
+			"bytes": 4021082,
+			"sha256": "ce51dabdddb2bdbde5dce4e6dfe0729297e790a77b0a756d4888a81a68194f4a"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/lockup-dark.svg",
-			"role": "Horizontal logo and wordmark",
-			"bytes": 6981,
-			"sha256": "d026e53908675c187b68f3af7126b413b9e59f8568a1e8c2a65d11c5d4c7ac9e"
+			"path": "/brands/snail/v2.0.0/license.txt",
+			"role": "Brand usage, licensing, specimens and measured native colors",
+			"bytes": 3558,
+			"sha256": "76fa6a67ec4d2ee7d365d4031c03ffe2fe4f28f012c40fba8ced14f3a94deb24"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/lockup-light.svg",
-			"role": "Horizontal logo and wordmark",
-			"bytes": 6981,
-			"sha256": "243b6b2b100668a93577fe23a12217e27649b71f70ddd9db978a830c87d86d1c"
+			"path": "/brands/snail/v2.0.0/lockup-dark.png",
+			"role": "Transparent raster composition of generated animal and licensed outlined wordmark; not native SVG",
+			"bytes": 278309,
+			"sha256": "83ea0114d6b418732bb4f12d84abcd06084b5d40fd9fbd7acaa603c73688bc9f"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/logo-dark.png",
-			"role": "1024px transparent raster master",
-			"bytes": 41683,
-			"sha256": "c500389fcc93d4daf497b25d5b24d07dc7a2826af433cb58875877604ee930e6"
+			"path": "/brands/snail/v2.0.0/lockup-light.png",
+			"role": "Transparent raster composition of generated animal and licensed outlined wordmark; not native SVG",
+			"bytes": 277038,
+			"sha256": "e80ec7215e64124769251cc2ba857b53fbe60fc2664b614831f4abc8575f5564"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/logo-light.png",
-			"role": "1024px transparent raster master",
-			"bytes": 41201,
-			"sha256": "42797d85144843ec3aaf13cf12f32ca2c008541d077de58524a78a5fa72eb672"
+			"path": "/brands/snail/v2.0.0/logo-dark.png",
+			"role": "1024px transparent foreground; theme-neutral original colors",
+			"bytes": 700201,
+			"sha256": "6fd93c9c579211b244f5cda2d2fa0997c830011f21f79290636f25e40d9d8bbc"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/mark-dark-128.png",
-			"role": "128px transparent application mark",
-			"bytes": 3270,
-			"sha256": "ca8a2ff374b85c1006562a84d89ab30aca318ae7c3b785c9f49f47318c02b9ab"
+			"path": "/brands/snail/v2.0.0/logo-light.png",
+			"role": "1024px transparent foreground; theme-neutral original colors",
+			"bytes": 700201,
+			"sha256": "6fd93c9c579211b244f5cda2d2fa0997c830011f21f79290636f25e40d9d8bbc"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/mark-dark-16.png",
-			"role": "16px transparent application mark",
-			"bytes": 497,
-			"sha256": "3459cbb5b3b5a8aba07ca1fdc81ff6bb20cc46e1cf5d13831030d0cc3cd990de"
+			"path": "/brands/snail/v2.0.0/logo.png",
+			"role": "Native 2048px transparent master; original opaque animal pixels preserved",
+			"bytes": 2582119,
+			"sha256": "5a37ddc71323760f5a444d96bd345501be6a6622af4e2f92dee4886d4e9d0b72"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/mark-dark-24.png",
-			"role": "24px transparent application mark",
-			"bytes": 726,
-			"sha256": "b3d0551a5c18175a2e8be112fd2ec1f5e0585804787a229f1c2250da7843171e"
+			"path": "/brands/snail/v2.0.0/mark-1024.png",
+			"role": "1024px transparent foreground, complete native composition",
+			"bytes": 700201,
+			"sha256": "6fd93c9c579211b244f5cda2d2fa0997c830011f21f79290636f25e40d9d8bbc"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/mark-dark-256.png",
-			"role": "256px transparent application mark",
-			"bytes": 6953,
-			"sha256": "95f1a8b18f777fbcaaa6d547b03c186eea10e9ad31ab2da4e8c49a90e4c9d537"
+			"path": "/brands/snail/v2.0.0/mark-128.png",
+			"role": "128px transparent foreground, complete native composition",
+			"bytes": 18461,
+			"sha256": "c39ddde4d22c6cc238f74e891b72e7e5dee478a50c38d710da39dbf5ec306eeb"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/mark-dark-32.png",
-			"role": "32px transparent application mark",
-			"bytes": 906,
-			"sha256": "305c0cf58e4005f61b267e0a226b9dea553c5b6b1db9d7f366b8ecdbc749259c"
+			"path": "/brands/snail/v2.0.0/mark-16.png",
+			"role": "16px transparent foreground, complete native composition",
+			"bytes": 691,
+			"sha256": "a53cfa39b3136a50564831d932f4b715d290260c4eb124e1caa4ff96f30151a9"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/mark-dark-48.png",
-			"role": "48px transparent application mark",
-			"bytes": 1328,
-			"sha256": "74edfa9f4e6b1961550ed9a323f7a37399e183800158a282e55c185ed01f3bd1"
+			"path": "/brands/snail/v2.0.0/mark-2048.png",
+			"role": "2048px transparent foreground, complete native composition",
+			"bytes": 2582119,
+			"sha256": "5a37ddc71323760f5a444d96bd345501be6a6622af4e2f92dee4886d4e9d0b72"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/mark-dark-64.png",
-			"role": "64px transparent application mark",
-			"bytes": 1623,
-			"sha256": "9923034811a63db5090b5545413ef92fedeea35349bdb1749e442ebb1da6e3a8"
+			"path": "/brands/snail/v2.0.0/mark-24.png",
+			"role": "24px transparent foreground, complete native composition",
+			"bytes": 1197,
+			"sha256": "38566ce8b0ad5e71d70a306d2e7e6ef4589d0502f5eaf7338dbe6e0253902dfc"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/mark-dark.svg",
-			"role": "Transparent product mark",
-			"bytes": 632,
-			"sha256": "afeee895820129d5c793a32b711aef31b22fd59e0d9a6af1850c5eb0beb92760"
+			"path": "/brands/snail/v2.0.0/mark-256.png",
+			"role": "256px transparent foreground, complete native composition",
+			"bytes": 61770,
+			"sha256": "db8f775d618d716afda64bcf77e2afc4e8fbd25bb0e4290a8ec810ae7766dad6"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/mark-light-128.png",
-			"role": "128px transparent application mark",
-			"bytes": 3253,
-			"sha256": "bc629b348cc491d3b97698b0a221d9c8cf4da6794485e67ca8323c5bb399166c"
+			"path": "/brands/snail/v2.0.0/mark-32.png",
+			"role": "32px transparent foreground, complete native composition",
+			"bytes": 1837,
+			"sha256": "a97cbd836cb176b5c30019fb139ec7c60b08249448d26a4d4ebe616d18d84db6"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/mark-light-16.png",
-			"role": "16px transparent application mark",
-			"bytes": 485,
-			"sha256": "0de69f4997d89fd4e6791e6653103d1e87b7032fe1f386dd3b0db3022b70a83a"
+			"path": "/brands/snail/v2.0.0/mark-48.png",
+			"role": "48px transparent foreground, complete native composition",
+			"bytes": 3434,
+			"sha256": "e60a4be3aca7b0a159d5881facc7f647cd922607e83c8a9211e657a35a3c934d"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/mark-light-24.png",
-			"role": "24px transparent application mark",
-			"bytes": 709,
-			"sha256": "63a16ac3044335f34dd0bccff10ffda1d03c6724a77cfeb56c98c3b70d46330e"
+			"path": "/brands/snail/v2.0.0/mark-512.png",
+			"role": "512px transparent foreground, complete native composition",
+			"bytes": 202029,
+			"sha256": "746a33095c347d830eab10ee2fa3f18ec37828d12208f121ea9c637f42c65829"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/mark-light-256.png",
-			"role": "256px transparent application mark",
-			"bytes": 6938,
-			"sha256": "519547741e9ec64f5a6ab5e70bc597178156646a9a32059a1190fcb054bc6091"
+			"path": "/brands/snail/v2.0.0/mark-64.png",
+			"role": "64px transparent foreground, complete native composition",
+			"bytes": 5551,
+			"sha256": "93325d4f3725d8211eeb8885ee3e07297c7df066d6ef3566960053da167fd6f8"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/mark-light-32.png",
-			"role": "32px transparent application mark",
-			"bytes": 908,
-			"sha256": "9eb1cd5dc748e8731e28a039be76feb9c915af1f73c41d4ea2bbe8b3a89a5809"
+			"path": "/brands/snail/v2.0.0/mark-dark.png",
+			"role": "Same unaltered transparent animal in both themes; no recoloring",
+			"bytes": 2582119,
+			"sha256": "5a37ddc71323760f5a444d96bd345501be6a6622af4e2f92dee4886d4e9d0b72"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/mark-light-48.png",
-			"role": "48px transparent application mark",
-			"bytes": 1325,
-			"sha256": "4726b6bce4950e557912e7f87259413e1d4ddfc3404c35bf84e0c250ddf1eddc"
+			"path": "/brands/snail/v2.0.0/mark-light.png",
+			"role": "Same unaltered transparent animal in both themes; no recoloring",
+			"bytes": 2582119,
+			"sha256": "5a37ddc71323760f5a444d96bd345501be6a6622af4e2f92dee4886d4e9d0b72"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/mark-light-64.png",
-			"role": "64px transparent application mark",
-			"bytes": 1610,
-			"sha256": "1574e3616908737a6c2dd6dc7db7f51814dc71d12f66d164de3f9d61bb3eb83a"
+			"path": "/brands/snail/v2.0.0/palette.json",
+			"role": "Brand usage, licensing, specimens and measured native colors",
+			"bytes": 2166,
+			"sha256": "37756b7852591563c86dee8d5d0503b1e6737017c92b856e88ec5cf70212f3f9"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/mark-light.svg",
-			"role": "Transparent product mark",
-			"bytes": 632,
-			"sha256": "bd936c17cf3d2c64c09150a7e4d7fd07206278505f781a8e4eb162fac2bdb00a"
+			"path": "/brands/snail/v2.0.0/prompt-hero.txt",
+			"role": "Exact submitted wide-generation prompt",
+			"bytes": 2230,
+			"sha256": "d66a039c5a8ad7165425f156304b7a6449197f1045ee7c43132dce115e860231"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/mark-mono.svg",
-			"role": "One-color foreground; exact geometry retained",
-			"bytes": 632,
-			"sha256": "3b3beb8c28409b10c8b60809310ec44aae22b5ff4b8fea052e96119a9ae00a8f"
+			"path": "/brands/snail/v2.0.0/prompt-icon.txt",
+			"role": "Exact submitted square-generation prompt",
+			"bytes": 3731,
+			"sha256": "794dec0d92a2db52531cc9f670d831a3b2fe28da2d12ccf389183e8a353b1b82"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/mark.svg",
-			"role": "Transparent mark following the system color scheme",
-			"bytes": 719,
-			"sha256": "ad58b9a0d483ba1faee75d4307f6e4ad270e5a98fc0c3ee5179a954d28a28c43"
+			"path": "/brands/snail/v2.0.0/provenance.json",
+			"role": "Actual GPT Image requests/output hashes, delegated selection, processing and preserved v1 history",
+			"bytes": 10992,
+			"sha256": "981e272f65eea0fadca5f58bf6d2e0424aae80b040cf21c8907bda3b8733a83a"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/review.css",
-			"role": "Brand usage, review and evidenced design tokens",
-			"bytes": 3706,
-			"sha256": "d483b088b9d5972f928c16eb055402b0cf0d8ff80f25ef19e6abd7fa8d678ea8"
+			"path": "/brands/snail/v2.0.0/raw-icon.png",
+			"role": "Untouched native GPT Image square PNG with original provenance metadata",
+			"bytes": 1796840,
+			"sha256": "43ae626e6bd0c8090ded7ad671da944a007ffc4a365844137b30bda1574ce568"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/review.html",
-			"role": "Brand usage, review and evidenced design tokens",
-			"bytes": 4318,
-			"sha256": "dd7aabf64f2dc935c541fd76c106dd60937c83ea956cc47dbad74cf89a2e68e9"
+			"path": "/brands/snail/v2.0.0/review.css",
+			"role": "Brand usage, licensing, specimens and measured native colors",
+			"bytes": 7931,
+			"sha256": "4e56409001df3fcfb427c31a5f71a11dc09970682c2799135e7cc174dc23dab1"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/space-grotesk-ofl.txt",
-			"role": "SIL OFL 1.1 and original font authors",
+			"path": "/brands/snail/v2.0.0/review.html",
+			"role": "Brand usage, licensing, specimens and measured native colors",
+			"bytes": 11981,
+			"sha256": "de3fd48ac7e658f944be2c8b96974c672fa6f323f9007e31b94939a2f41ccae6"
+		},
+		{
+			"path": "/brands/snail/v2.0.0/review.js",
+			"role": "Brand usage, licensing, specimens and measured native colors",
+			"bytes": 1767,
+			"sha256": "5ac617f6d923e41083ad5c9a2bab4c959b0653a67b2f24a9dc45b8004ff53701"
+		},
+		{
+			"path": "/brands/snail/v2.0.0/space-grotesk-ofl.txt",
+			"role": "Byte-preserved official Hexly/font resource from v1.0.0",
 			"bytes": 4401,
 			"sha256": "18a4de52385f6b988782639d5d0cc1326e5a8c2de9a7f01d7b20d9aedcc60943"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/space-grotesk.woff2",
-			"role": "Unmodified site font for the standalone guide",
+			"path": "/brands/snail/v2.0.0/space-grotesk.woff2",
+			"role": "Byte-preserved official Hexly/font resource from v1.0.0",
 			"bytes": 22288,
 			"sha256": "0640890476fc1198ab4de571fb658de443c4d85b66466ec09534a8737ab1ce9d"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/tokens.json",
-			"role": "Brand usage, review and evidenced design tokens",
-			"bytes": 1183,
-			"sha256": "899e00f4e0415eb641f8d2daa619db487264748b6e0beb0c032297c56d2ec62c"
+			"path": "/brands/snail/v2.0.0/texture-dark.png",
+			"role": "512px transparent raster of the authored seamless texture",
+			"bytes": 11118,
+			"sha256": "eaa945a9e5e76e7cd00da2a632eaebb3eeb611d5d343d600f2552c790abcbe4e"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/wordmark-dark.svg",
-			"role": "Outlined Space Grotesk 600 wordmark",
+			"path": "/brands/snail/v2.0.0/texture-dark.svg",
+			"role": "Authored seamless spiral/trail support graphic; 512px tile, no animal tracing",
+			"bytes": 798,
+			"sha256": "97d78a33883b966e1dbad3a8546b5d229e722f54c0d179b9d939e0f91b1b524a"
+		},
+		{
+			"path": "/brands/snail/v2.0.0/texture-light.png",
+			"role": "512px transparent raster of the authored seamless texture",
+			"bytes": 9477,
+			"sha256": "199fcfc08d363656d57ee6047c58722d681af854127553c3173de0f43c871c78"
+		},
+		{
+			"path": "/brands/snail/v2.0.0/texture-light.svg",
+			"role": "Authored seamless spiral/trail support graphic; 512px tile, no animal tracing",
+			"bytes": 799,
+			"sha256": "43a118b12490837148a60e08bf3516754a5dbb1752b15967c7acf7ac404ea237"
+		},
+		{
+			"path": "/brands/snail/v2.0.0/tokens.json",
+			"role": "Actual Hexly theme/font tokens and distinct raster-artwork usage rules",
+			"bytes": 1179,
+			"sha256": "e13cdc41b6a444434b20ab20c383274674cd72d45e855b9ef335e1bcd0348be9"
+		},
+		{
+			"path": "/brands/snail/v2.0.0/white.png",
+			"role": "Extracted native artwork over pure white",
+			"bytes": 2464715,
+			"sha256": "ecff4876a479bb9ddaad49ac80549d0b19c0c19dbd9957896e2437ad0cb4c06b"
+		},
+		{
+			"path": "/brands/snail/v2.0.0/wordmark-dark.svg",
+			"role": "Unchanged outlined Space Grotesk 600 letters; original font license retained",
 			"bytes": 6584,
 			"sha256": "af73b50647e00e123caa4ed7805927d2d42daeb2d2e93152baba3c378ca462ad"
 		},
 		{
-			"path": "/brands/snail/v1.0.0/wordmark-light.svg",
-			"role": "Outlined Space Grotesk 600 wordmark",
+			"path": "/brands/snail/v2.0.0/wordmark-light.svg",
+			"role": "Unchanged outlined Space Grotesk 600 letters; original font license retained",
 			"bytes": 6584,
 			"sha256": "7a17d736ce99a4a21e9ae943083efcbc164b3002afd51efbb77d58eeeb797b30"
 		}

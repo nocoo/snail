@@ -1,0 +1,66 @@
+{
+	"method": "Exact native opaque sRGB pixel samples; raster colors are distinct from Hexly UI tokens",
+	"source": "artwork/logo-family/snail/2026-09-13-01/raw/generated.png",
+	"sha256": "43ae626e6bd0c8090ded7ad671da944a007ffc4a365844137b30bda1574ce568",
+	"samples": [
+		{
+			"color": "#c46435",
+			"role": "primary",
+			"label": {
+				"en": "Terracotta shell",
+				"zh": "陶土螺壳"
+			},
+			"point": [620, 1250],
+			"source": "Native Snail output SHA-256 43ae626e6bd0c8090ded7ad671da944a007ffc4a365844137b30bda1574ce568; opaque sRGB pixel (620, 1250); artwork/brands/snail/v2.0.0/palette.json"
+		},
+		{
+			"color": "#943d25",
+			"role": "accent",
+			"label": {
+				"en": "Shell shadow",
+				"zh": "壳内暗面"
+			},
+			"point": [660, 610],
+			"source": "Native Snail output SHA-256 43ae626e6bd0c8090ded7ad671da944a007ffc4a365844137b30bda1574ce568; opaque sRGB pixel (660, 610); artwork/brands/snail/v2.0.0/palette.json"
+		},
+		{
+			"color": "#e79f6f",
+			"role": "accent",
+			"label": {
+				"en": "Sunlit facet",
+				"zh": "浅色切面"
+			},
+			"point": [780, 890],
+			"source": "Native Snail output SHA-256 43ae626e6bd0c8090ded7ad671da944a007ffc4a365844137b30bda1574ce568; opaque sRGB pixel (780, 890); artwork/brands/snail/v2.0.0/palette.json"
+		},
+		{
+			"color": "#64604a",
+			"role": "accent",
+			"label": {
+				"en": "Olive ink",
+				"zh": "橄榄墨色"
+			},
+			"point": [1480, 1260],
+			"source": "Native Snail output SHA-256 43ae626e6bd0c8090ded7ad671da944a007ffc4a365844137b30bda1574ce568; opaque sRGB pixel (1480, 1260); artwork/brands/snail/v2.0.0/palette.json"
+		},
+		{
+			"color": "#bf5333",
+			"role": "accent",
+			"label": {
+				"en": "Returning point",
+				"zh": "重逢红点"
+			},
+			"point": [1875, 1040],
+			"source": "Native Snail output SHA-256 43ae626e6bd0c8090ded7ad671da944a007ffc4a365844137b30bda1574ce568; opaque sRGB pixel (1875, 1040); artwork/brands/snail/v2.0.0/palette.json"
+		}
+	],
+	"presentation": {
+		"color": "#f0f0e9",
+		"role": "background",
+		"label": {
+			"en": "Hexly paper",
+			"zh": "Hexly 纸色"
+		},
+		"source": "src/styles/base.css and the independent Snail finishing/01/settings.json background.base"
+	}
+}

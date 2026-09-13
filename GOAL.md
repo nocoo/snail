@@ -152,6 +152,9 @@ S7 同时发现 workerd 不接受 fetch `redirect: "error"`，最小 workerd 实
 
 - 用户要求对照 Basalt 模板与 Ocelot、Pew、Zhe，执行 `/su-basalt-upgrade` 并自查常见问题。已读取本机命令、Basalt INTEGRATION 与已发布包的 recipes/API；参考仓库只读。npm 最新版与当前锁定版均为 `@nocoo/basalt@2.1.7`，不虚增依赖版本。
 - RED：新增桌面/手机、明暗主题的框架导航与键盘控件行为回归，并为真实本地合成上传补充内容层级检查。桌面首轮 4/4 失败：两主题缺少标准顶栏仓库入口、原生 select 没有公共控件弹层、视频卡片与内容岛颜色相同。日志 `.artifacts/S17-frame-red.log`，原布局截图 `.artifacts/S17-before-frame-*`；本地测试身份与合成媒体不代表生产验证。
+- 后续行为 RED：预览/导入关闭未恢复焦点；编辑已保存笔记仍显示成功。GREEN：公共 Dialog 的自动焦点钩子记录并恢复 opener，已删除时回主区；成功反馈绑定已保存字段快照，修改后立即失效。18/18 初轮完整桌面/手机回归通过，日志 `.artifacts/S17-focus-red.log`、`.artifacts/S17-save-status-red.log`、`.artifacts/S17-e2e-green.log`。
+- REFACTOR：公共 AppShell、Sidebar、AppHeader、ContentIsland、PageHeader 和 LayerCard 接管外框到内容；Select、Checkbox、Input、Dialog、UploadItem 等接管基础控件。应用只保留媒体几何与业务组合，陶土 accent 使用公共 `AccentProvider.paletteOverrides`。细节见 docs/19。
+- 独立只读 Codex 首轮提出 2 个 P2 和 1 个 P3。RED 分别确认面包屑卸载页面丢失 window 标记、45 项分类末项无法进入视口、弹窗分区间距为 0；接 `LinkProvider` 导航 adapter、限制公共 Select 可用高度、补内容间距后定向 GREEN 5/5。日志 `.artifacts/S19-brand-navigation-red.log`、`.artifacts/S19-brand-green-review-red.log`、`.artifacts/S19-brand-review-green.log`。
 
 ## S18 · 本机 HTTPS 与完整开发服务（2026-09-13）
 
@@ -162,3 +165,13 @@ S7 同时发现 workerd 不接受 fetch `redirect: "error"`，最小 workerd 实
 - 开发服务已经保持运行；运行方式与配置在 docs/18。类型检查通过，S17 首轮完整桌面/手机回归 18/18 通过；Basalt 视觉自查、独立 review 与全量发布检查仍在继续，不将其提前记为完成。
 - S18 全量单元/Worker HTTP 73/73、类型、Biome 和差异空白检查通过。开发代理为本地用途，真实生产验收不由上述测试替代。
 - 开发环境提交 `b4f2b8f` 后，用户报告 Basalt/React 模块 504。直接请求确认 `504 Outdated Optimize Dep`，根因是新增 HTTP 测试 Vite 与运行中的开发站共享优化缓存；并非 Caddy 网络超时。补充缓存保留回归 RED（文件被删除而 ENOENT）→测试模式独立 cacheDir→GREEN 3/3；日志 `.artifacts/S18-cache-{red,green}.log`。随后真实 HTTPS 浏览器连续打开与刷新，72 个依赖请求全部 200，HMR 正常、页面异常 0，证据 `.artifacts/S18-dependencies-browser.json`。
+
+## S19 · 品牌 2.0 与完整界面回归（2026-09-13）
+
+- 用户要求全面采用 `../hexly.ai` 的新 logo。已核对 Hexly `a3e257311fec177cf2e2fd61bdb69dd13b68d408` 的全部 49 个源文件，选 18 个精确原文件用于 Snail；原生透明 master、README 展示、侧栏/手机导航、加载/登录、真实 ICO、Apple/PWA 入口全部更新。旧版消费者删除，历史和许可保留；Hexly 只读，细节见 docs/20。
+- 品牌 RED：真实页面仍显示旧 SVG，新的 PNG 契约失败；复制精确字节并更新公共 BrandMark 后 GREEN。固定 manifest 与 18 个目标哈希通过，Chromium 实际解码四张透明图与六个 ICO entry，确认尺寸、透明/半透明/不透明像素及四角 alpha；证据 `.artifacts/S19-brand-decoded.json`。
+- 扩展回归覆盖分类/标签实际保存与筛选、取消勾选 `library:read` 后读取返回 403、心跳 200、网页撤销后 401。首轮 24 项中 4 项因测试把 LoadingScreen 的 aria-label 当可见文案而失败；独立 reviewer 确认后改为具名 status 定位，未修改产品行为。完整 GREEN 24/24，日志 `.artifacts/S19-e2e-green.log`。
+- 当前本地门禁：74 单元/真实本地 Worker HTTP、24 桌面/手机浏览器、TypeScript、Biome、Vite build、Worker dry-run、11 篇研究哈希、18 个品牌原文件与 gitleaks 工作目录扫描全部通过。日志 `.artifacts/S19-*`。本条在产品提交前记录，最终独立 Sign Off 和匹配提交的生产部署结果另记。
+- 视觉截图改为等待完整公共控件动画，稳定截图专项 8/8 通过；实际 HTTPS 开发站在 HTTP 套件之后再次加载与刷新，72 个依赖均 200、0 页面异常，5 个实际返回的品牌资源哈希与仓库相同，`/api/live` 与 `/api/me` 均 200，证据 `.artifacts/S19-local-final.json`。
+- 最后链接自查 RED 发现连接指南指向不存在的 README fragment；更正到实际 docs/13 文件。导航内部状态统一从浏览器 pathname 读取，保留查询串在地址栏；框架、长列表与交互最终专项 8/8 通过，日志 `.artifacts/S19-guide-red.log`、`.artifacts/S19-navigation-final.log`。
+- 独立只读 Codex 第三轮正式 Sign Off：针对 `2460db0` 之后的提交与最终工作树，无剩余 P0/P1/P2/P3。核对过 74 HTTP/单元、24 浏览器、8 视觉回归和开发 HTTPS 证据；未运行测试、未写文件。正式提交后的 CI 和真实生产复验继续由主 Codex 执行。

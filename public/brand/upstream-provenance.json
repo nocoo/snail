@@ -1,0 +1,315 @@
+{
+	"project": "snail",
+	"brandVersion": "2.0.0",
+	"method": "gpt-image-2",
+	"generations": [
+		{
+			"archive": "artwork/logo-family/snail/2026-09-13-01",
+			"selected": true,
+			"model": "gpt-image-2",
+			"provider": "Azure OpenAI / Foundry",
+			"requestId": "1f52a02d-1350-4c8e-8341-eda8b7753c42",
+			"promptSha256": "794dec0d92a2db52531cc9f670d831a3b2fe28da2d12ccf389183e8a353b1b82",
+			"output": {
+				"path": "raw/generated.png",
+				"width": 2048,
+				"height": 2048,
+				"bytes": 1796840,
+				"sha256": "43ae626e6bd0c8090ded7ad671da944a007ffc4a365844137b30bda1574ce568",
+				"nativeSizeMatchesRequest": true,
+				"rawResponseBytesPreserved": true
+			},
+			"references": [
+				{
+					"index": 1,
+					"path": "../../frogie/2026-09-06-01/finishing/02/exports/frogie-icon-2048.png",
+					"sha256": "977a64101410e2aa217e1d74256728e019949d5ee725ec22a04e8469e930628e",
+					"bytes": 5418502,
+					"mime": "image/png"
+				},
+				{
+					"index": 2,
+					"path": "../../pew/2026-09-06-01/finishing/04/exports/pew-icon-2048.png",
+					"sha256": "d3734589bc3d7062c7473421a44570ff7cdd2744a813c756dd2a7eacb4e1f29a",
+					"bytes": 4459362,
+					"mime": "image/png"
+				},
+				{
+					"index": 3,
+					"path": "../../../../public/logos/family/ocelot/2026-09-11-01/03/icon.png",
+					"sha256": "2ca4ee7de5f6906c527b0e22967bd7bea4604762c8d342d2300e2156049922dc",
+					"bytes": 6172345,
+					"mime": "image/png"
+				}
+			]
+		},
+		{
+			"archive": "artwork/logo-family/snail/2026-09-13-02",
+			"selected": false,
+			"model": "gpt-image-2",
+			"provider": "Azure OpenAI / Foundry",
+			"requestId": "e16c5125-1d59-4a51-899c-fae2763470e2",
+			"promptSha256": "1c8ae609c70517f3ddf0f1710c2c18adf61f43814c19a93bd5f3049b1035db45",
+			"output": {
+				"path": "raw/generated.png",
+				"width": 2048,
+				"height": 2048,
+				"bytes": 1618196,
+				"sha256": "371572e5ea8c8f58ed8acab6c16e5e4a1b216085ed1f887ca4ea6765f12be6f1",
+				"nativeSizeMatchesRequest": true,
+				"rawResponseBytesPreserved": true
+			},
+			"references": [
+				{
+					"index": 1,
+					"path": "../../frogie/2026-09-06-01/finishing/02/exports/frogie-icon-2048.png",
+					"sha256": "977a64101410e2aa217e1d74256728e019949d5ee725ec22a04e8469e930628e",
+					"bytes": 5418502,
+					"mime": "image/png"
+				},
+				{
+					"index": 2,
+					"path": "../../pew/2026-09-06-01/finishing/04/exports/pew-icon-2048.png",
+					"sha256": "d3734589bc3d7062c7473421a44570ff7cdd2744a813c756dd2a7eacb4e1f29a",
+					"bytes": 4459362,
+					"mime": "image/png"
+				},
+				{
+					"index": 3,
+					"path": "../../../../public/logos/family/ocelot/2026-09-11-01/03/icon.png",
+					"sha256": "2ca4ee7de5f6906c527b0e22967bd7bea4604762c8d342d2300e2156049922dc",
+					"bytes": 6172345,
+					"mime": "image/png"
+				}
+			]
+		},
+		{
+			"archive": "artwork/logo-family/snail/2026-09-13-03",
+			"selected": false,
+			"model": "gpt-image-2",
+			"provider": "Azure OpenAI / Foundry",
+			"requestId": "30991c61-3b72-4568-ae29-c41e0e0b1d6f",
+			"promptSha256": "ccce9678b185646799eee60a20264aa38534aa6515e94dd2f00f6f7488d2bd0d",
+			"output": {
+				"path": "raw/generated.png",
+				"width": 2048,
+				"height": 2048,
+				"bytes": 1257529,
+				"sha256": "7335e38eba169b029e365f0a8ce6ee03f8ae70544a1789197b271cbd426addec",
+				"nativeSizeMatchesRequest": true,
+				"rawResponseBytesPreserved": true
+			},
+			"references": [
+				{
+					"index": 1,
+					"path": "../../frogie/2026-09-06-01/finishing/02/exports/frogie-icon-2048.png",
+					"sha256": "977a64101410e2aa217e1d74256728e019949d5ee725ec22a04e8469e930628e",
+					"bytes": 5418502,
+					"mime": "image/png"
+				},
+				{
+					"index": 2,
+					"path": "../../pew/2026-09-06-01/finishing/04/exports/pew-icon-2048.png",
+					"sha256": "d3734589bc3d7062c7473421a44570ff7cdd2744a813c756dd2a7eacb4e1f29a",
+					"bytes": 4459362,
+					"mime": "image/png"
+				},
+				{
+					"index": 3,
+					"path": "../../../../public/logos/family/ocelot/2026-09-11-01/03/icon.png",
+					"sha256": "2ca4ee7de5f6906c527b0e22967bd7bea4604762c8d342d2300e2156049922dc",
+					"bytes": 6172345,
+					"mime": "image/png"
+				}
+			]
+		},
+		{
+			"archive": "artwork/logo-family/snail/2026-09-13-04",
+			"selected": true,
+			"model": "gpt-image-2",
+			"provider": "Azure OpenAI / Foundry",
+			"requestId": "61839a18-d527-4ba1-898c-84bc6e2c6aaa",
+			"promptSha256": "d66a039c5a8ad7165425f156304b7a6449197f1045ee7c43132dce115e860231",
+			"output": {
+				"path": "raw/generated.png",
+				"width": 2560,
+				"height": 1024,
+				"bytes": 2938946,
+				"sha256": "5ed5d71d0de5064bdbe032db2a6ad99c2931fcc401b3f9a8e5c2282b1b54acba",
+				"nativeSizeMatchesRequest": true,
+				"rawResponseBytesPreserved": true
+			},
+			"references": [
+				{
+					"index": 1,
+					"path": "../2026-09-13-01/raw/generated.png",
+					"sha256": "43ae626e6bd0c8090ded7ad671da944a007ffc4a365844137b30bda1574ce568",
+					"bytes": 1796840,
+					"mime": "image/png"
+				},
+				{
+					"index": 2,
+					"path": "../../frogie/2026-09-06-01/finishing/02/exports/frogie-icon-2048.png",
+					"sha256": "977a64101410e2aa217e1d74256728e019949d5ee725ec22a04e8469e930628e",
+					"bytes": 5418502,
+					"mime": "image/png"
+				},
+				{
+					"index": 3,
+					"path": "../../../../public/logos/family/ocelot/2026-09-11-01/03/icon.png",
+					"sha256": "2ca4ee7de5f6906c527b0e22967bd7bea4604762c8d342d2300e2156049922dc",
+					"bytes": 6172345,
+					"mime": "image/png"
+				}
+			]
+		},
+		{
+			"archive": "artwork/logo-family/snail/2026-09-13-05",
+			"selected": false,
+			"model": "gpt-image-2",
+			"provider": "Azure OpenAI / Foundry",
+			"requestId": "d55d6262-ce6d-48d6-9ec3-e0f679eb611e",
+			"promptSha256": "1c162614bcb7f15efcfd26e8a6308d86a1073705876a9ccdf0d3f5c7185bd390",
+			"output": {
+				"path": "raw/generated.png",
+				"width": 2560,
+				"height": 1024,
+				"bytes": 3019439,
+				"sha256": "a30846c7783d00bd6921aceb617e4da974634df18137bcb267a986e2048af55a",
+				"nativeSizeMatchesRequest": true,
+				"rawResponseBytesPreserved": true
+			},
+			"references": [
+				{
+					"index": 1,
+					"path": "../2026-09-13-02/raw/generated.png",
+					"sha256": "371572e5ea8c8f58ed8acab6c16e5e4a1b216085ed1f887ca4ea6765f12be6f1",
+					"bytes": 1618196,
+					"mime": "image/png"
+				},
+				{
+					"index": 2,
+					"path": "../../frogie/2026-09-06-01/finishing/02/exports/frogie-icon-2048.png",
+					"sha256": "977a64101410e2aa217e1d74256728e019949d5ee725ec22a04e8469e930628e",
+					"bytes": 5418502,
+					"mime": "image/png"
+				},
+				{
+					"index": 3,
+					"path": "../../../../public/logos/family/ocelot/2026-09-11-01/03/icon.png",
+					"sha256": "2ca4ee7de5f6906c527b0e22967bd7bea4604762c8d342d2300e2156049922dc",
+					"bytes": 6172345,
+					"mime": "image/png"
+				}
+			]
+		},
+		{
+			"archive": "artwork/logo-family/snail/2026-09-13-06",
+			"selected": false,
+			"model": "gpt-image-2",
+			"provider": "Azure OpenAI / Foundry",
+			"requestId": "634dbc94-c6b9-47a8-a194-52ae025a7838",
+			"promptSha256": "15d118b00d7e18bce21719fc0a180cf0bd05cc2a50fcbd2680f9d46a6d683458",
+			"output": {
+				"path": "raw/generated.png",
+				"width": 2560,
+				"height": 1024,
+				"bytes": 3085269,
+				"sha256": "6fc0328939bba1697a4a94b75226d44c219feb3906a9a24dc2ae2f678ecf2199",
+				"nativeSizeMatchesRequest": true,
+				"rawResponseBytesPreserved": true
+			},
+			"references": [
+				{
+					"index": 1,
+					"path": "../2026-09-13-03/raw/generated.png",
+					"sha256": "7335e38eba169b029e365f0a8ce6ee03f8ae70544a1789197b271cbd426addec",
+					"bytes": 1257529,
+					"mime": "image/png"
+				},
+				{
+					"index": 2,
+					"path": "../../frogie/2026-09-06-01/finishing/02/exports/frogie-icon-2048.png",
+					"sha256": "977a64101410e2aa217e1d74256728e019949d5ee725ec22a04e8469e930628e",
+					"bytes": 5418502,
+					"mime": "image/png"
+				},
+				{
+					"index": 3,
+					"path": "../../../../public/logos/family/ocelot/2026-09-11-01/03/icon.png",
+					"sha256": "2ca4ee7de5f6906c527b0e22967bd7bea4604762c8d342d2300e2156049922dc",
+					"bytes": 6172345,
+					"mime": "image/png"
+				}
+			]
+		}
+	],
+	"selection": {
+		"date": "2026-09-13",
+		"brandVersion": "2.0.0",
+		"selectedSquare": "artwork/logo-family/snail/2026-09-13-01",
+		"selectedHero": "artwork/logo-family/snail/2026-09-13-04",
+		"finishing": "01",
+		"decisionSource": "owner-delegated batch acceptance",
+		"ownerReviewedExactBytes": false,
+		"reviewers": {
+			"Codex": "Selects Returning for stable complete silhouette, native safe framing and consistent wide composition.",
+			"Grok w1:p7": "Prefers Turning (02) for the more animated pose, shell depth and stronger red point; considers Returning strongest in compact small-size balance. This recommendation was read and retained, not described as unanimous approval.",
+			"Pi w1:p8": "Read-only integration review identified native SVG assumptions and recommended family plus versioned brand-kit delivery."
+		},
+		"nativeRoundedClearanceEstimate": {
+			"01": 145.5,
+			"02": 110.5,
+			"03": 135.5
+		},
+		"selectionRationale": [
+			"Returning passes the 128px rounded-outline clearance requirement at native size without reframing; Turning would need additional inset or another generation.",
+			"64/48/32/24/16px complete-frame comparisons favor the stable low Returning silhouette for repeated small navigation uses.",
+			"Hero 04 preserves the chosen identity in a separately generated 5:2 composition, with a quiet spiral paper field."
+		],
+		"compositionChanges": {
+			"crop": false,
+			"reposition": false,
+			"scale": 1,
+			"recolor": false,
+			"retouch": false
+		},
+		"history": "All six requests, responses, prompts, untouched PNGs and reviews retained; unselected concepts are not published as the current brand.",
+		"sourceAdoption": "Pending Snail integration of published 2.0.0; historical 1.0.0 adoption fe5f72e8a0d960a81acadc5704a04e1c4ed4f607 remains recorded.",
+		"productRelease": "Snail 0.1.0 is a deployed candidate, authentication acceptance and formal tag/Release pending."
+	},
+	"processing": {
+		"source": "artwork/logo-family/snail/2026-09-13-01/finishing/01/manifest.json",
+		"sourceSha256": "43ae626e6bd0c8090ded7ad671da944a007ffc4a365844137b30bda1574ce568",
+		"opaqueColorsPreserved": true,
+		"opaqueEquality": {
+			"opaquePixels": 1227417,
+			"changedOpaquePixels": 0,
+			"softEdgePixels": 10123,
+			"method": "Compare every fully opaque extracted pixel to the same native source coordinate; no resampling"
+		},
+		"crop": false,
+		"recolor": false,
+		"placement": {
+			"scale": 1,
+			"offsetAt2048": [0, 0],
+			"bounds": {
+				"left": 158,
+				"top": 415,
+				"right": 1902,
+				"bottom": 1572
+			},
+			"visibleAlphaThreshold": 16,
+			"minimumRoundedEdgeClearance": 145.50000000000006,
+			"clippedPixels": 0
+		}
+	},
+	"historicalBrand": {
+		"version": "1.0.0",
+		"root": "https://hexly.ai/brands/snail/v1.0.0/",
+		"manifestSha256": "11b8203d41030ad5317b94fd8a2a19d7a7b1077f174410b89caea4fd0d082ec8",
+		"adoptionRevision": "fe5f72e8a0d960a81acadc5704a04e1c4ed4f607"
+	},
+	"sourceAdoptionRevision": null,
+	"sourceScope": "Only hexly.ai was written; Snail consumes a pinned published version separately"
+}

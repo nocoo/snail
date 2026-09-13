@@ -1,7 +1,4 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="public/brand/lockup-dark.svg">
-  <img src="public/brand/lockup-light.svg" width="227" height="96" alt="Snail">
-</picture>
+<img src="assets/brand/icon-rounded.png" width="128" height="128" alt="Snail">
 
 # Snail
 
@@ -62,6 +59,6 @@ bun run brand:check       # 固定品牌来源与字节
 
 ## Brand
 
-Snail brand **1.0.0** is adopted from Hexly commit `352eb2652d4e11c876ef84152fc8e02f8d5ed331`. Navigation uses the actual application theme; browser icons retain the original SVG/ICO. All 21 selected files are byte-for-byte verified with `bun run brand:check`.
+Snail brand **2.0.0** is adopted from Hexly commit `a3e257311fec177cf2e2fd61bdb69dd13b68d408`. The generated animal retains its original colors in both themes; outlined wordmarks follow the application theme. Navigation, loading, login, favicon, platform icons and this README use the new identity. `bun run brand:check` verifies all 18 selected assets against the pinned source manifest.
 
-[Brand provenance](public/brand/provenance.json) · [Usage guide](public/brand/guide.md) · [Adoption record](docs/15-品牌采用与来源.md). Original geometry/code: MIT; Space Grotesk outlines: SIL OFL 1.1. The two license notices ship with the assets. Application and brand versions are independent.
+[Brand provenance](public/brand/provenance.json) · [Usage guide](public/brand/guide.md) · [Adoption record](docs/20-品牌2.0采用.md). Authored work and owner-held generated-output rights: MIT; Space Grotesk outlines: SIL OFL 1.1. Both license notices ship with the assets. Application and brand versions are independent.

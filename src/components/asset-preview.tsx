@@ -1,16 +1,27 @@
 import {
   Button,
+  Checkbox,
+  DescriptionList,
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
+  DialogHeader,
   DialogTitle,
+  Field,
   Input,
+  Label,
+  LayerCard,
 } from "@nocoo/basalt";
+import { Banner } from "@nocoo/basalt/components/banner";
+import { InputArea } from "@nocoo/basalt/components/input-area";
 import { Download, ExternalLink, Heart, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { Asset, Category, Tag } from "../../shared/types";
 import { api } from "../lib/api";
 import { formatBytes, formatDate, formatDuration } from "../lib/format";
+import { useDialogFocus } from "../lib/use-dialog-focus";
+import { OptionSelect } from "./option-select";
 
 export function AssetPreview({
   asset,
@@ -32,8 +43,17 @@ export function AssetPreview({
   const [favorite, setFavorite] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const [saved, setSaved] = useState("");
   const [playError, setPlayError] = useState(false);
+  const dialogFocus = useDialogFocus();
+  const changes = {
+    title,
+    description,
+    categoryId: category || null,
+    tagIds: selectedTags,
+    favorite,
+  };
+  const editSignature = JSON.stringify([asset?.id, changes]);
   useEffect(() => {
     if (asset) {
       setTitle(asset.title);
@@ -42,7 +62,7 @@ export function AssetPreview({
       setSelectedTags(asset.tags.map((tag) => tag.id));
       setFavorite(asset.favorite);
       setError("");
-      setSaved(false);
+      setSaved("");
       setPlayError(false);
     }
   }, [asset]);
@@ -53,9 +73,9 @@ export function AssetPreview({
     try {
       await api(`/api/assets/${asset.id}`, {
         method: "PATCH",
-        body: { title, description, categoryId: category || null, tagIds: selectedTags, favorite },
+        body: changes,
       });
-      setSaved(true);
+      setSaved(editSignature);
       onSaved();
     } catch (error) {
       setError(error instanceof Error ? error.message : "保存失败。");
@@ -70,19 +90,25 @@ export function AssetPreview({
         if (!open) onClose();
       }}
     >
-      <DialogContent size="xl" className="preview-dialog">
+      <DialogContent size="xl" className="space-y-5" {...dialogFocus}>
         {asset && (
           <>
-            <div className="preview-heading">
-              <div>
-                <DialogTitle>{asset.title}</DialogTitle>
+            <div className="flex items-start justify-between gap-4">
+              <DialogHeader className="min-w-0">
+                <DialogTitle className="break-words">{asset.title}</DialogTitle>
                 <DialogDescription>收藏里的每一个片刻</DialogDescription>
-              </div>
-              <Button variant="ghost" size="icon" aria-label="关闭预览" onClick={onClose}>
-                <X size={18} />
+              </DialogHeader>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="shrink-0"
+                aria-label="关闭预览"
+                onClick={onClose}
+              >
+                <X className="size-4" strokeWidth={1.5} />
               </Button>
             </div>
-            <div className="video-stage">
+            <LayerCard padding="none" className="video-stage">
               {/* biome-ignore lint/a11y/useMediaCaption: User-owned originals may not contain captions; no fabricated caption track. */}
               <video
                 key={asset.id}
@@ -95,63 +121,73 @@ export function AssetPreview({
                 aria-label={asset.title}
               />
               {playError && (
-                <p role="status">当前浏览器无法播放此编码。你可以下载文件，用本机播放器打开。</p>
+                <Banner
+                  variant="secondary"
+                  role="status"
+                  size="sm"
+                  description="当前浏览器无法播放此编码。你可以下载文件，用本机播放器打开。"
+                />
               )}
-            </div>
-            <div className="preview-meta">
-              <span>{formatDuration(asset.duration)}</span>
-              <span>
+            </LayerCard>
+            <DescriptionList columns={2}>
+              <DescriptionList.Item term="时长">
+                {formatDuration(asset.duration)}
+              </DescriptionList.Item>
+              <DescriptionList.Item term="画面">
                 {asset.width && asset.height ? `${asset.width} × ${asset.height}` : asset.mime}
-              </span>
-              <span>{formatBytes(asset.size)}</span>
-              <span>{formatDate(asset.createdAt)}</span>
-              <a
-                href={`/api/assets/${asset.id}/media`}
-                download={`${asset.title}.${asset.mime === "video/webm" ? "webm" : asset.mime === "video/quicktime" ? "mov" : "mp4"}`}
-                aria-label="下载视频"
-              >
-                <Download size={15} />
-                下载
-              </a>
-              {asset.sourceUrl && (
-                <a href={asset.sourceUrl} target="_blank" rel="noreferrer">
-                  <ExternalLink size={15} />
-                  原帖
+              </DescriptionList.Item>
+              <DescriptionList.Item term="大小">{formatBytes(asset.size)}</DescriptionList.Item>
+              <DescriptionList.Item term="收藏时间">
+                {formatDate(asset.createdAt)}
+              </DescriptionList.Item>
+            </DescriptionList>
+            <div className="flex flex-wrap gap-2">
+              <Button variant="outline" size="sm" asChild>
+                <a
+                  href={`/api/assets/${asset.id}/media`}
+                  download={`${asset.title}.${asset.mime === "video/webm" ? "webm" : asset.mime === "video/quicktime" ? "mov" : "mp4"}`}
+                  aria-label="下载视频"
+                >
+                  <Download className="size-4" strokeWidth={1.5} />
+                  下载
                 </a>
+              </Button>
+              {asset.sourceUrl && (
+                <Button variant="outline" size="sm" asChild>
+                  <a href={asset.sourceUrl} target="_blank" rel="noreferrer">
+                    <ExternalLink className="size-4" strokeWidth={1.5} />
+                    原帖
+                  </a>
+                </Button>
               )}
             </div>
-            <div className="preview-form">
-              <label className="field" htmlFor="asset-title">
-                标题
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="标题" htmlFor="asset-title">
                 <Input
                   id="asset-title"
                   aria-label="标题"
                   value={title}
                   onChange={(event) => {
                     setTitle(event.target.value);
-                    setSaved(false);
                   }}
                   maxLength={300}
                 />
-              </label>
-              <label className="field">
-                分类
-                <select
+              </Field>
+              <Field label="分类" htmlFor="asset-category">
+                <OptionSelect
+                  id="asset-category"
                   aria-label="视频分类"
                   value={category}
-                  onChange={(event) => setCategory(event.target.value)}
-                >
-                  <option value="">未分类</option>
-                  {categories.map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {item.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="field wide">
-                笔记
-                <textarea
+                  onValueChange={setCategory}
+                  options={[
+                    { value: "", label: "未分类" },
+                    ...categories.map((item) => ({ value: item.id, label: item.name })),
+                  ]}
+                />
+              </Field>
+              <Field label="笔记" htmlFor="asset-notes" className="sm:col-span-2">
+                <InputArea
+                  id="asset-notes"
                   aria-label="笔记"
                   value={description}
                   onChange={(event) => setDescription(event.target.value)}
@@ -159,53 +195,51 @@ export function AssetPreview({
                   maxLength={5000}
                   placeholder="是什么让你想留下这个片段？"
                 />
-              </label>
-              <div className="field wide">
-                <span>标签</span>
-                <div className="tag-options">
+              </Field>
+              <Checkbox.Group
+                value={selectedTags}
+                onValueChange={setSelectedTags}
+                className="sm:col-span-2"
+              >
+                <Checkbox.Legend>标签</Checkbox.Legend>
+                <div className="flex flex-wrap gap-3">
                   {tags.length ? (
                     tags.map((tag) => (
-                      <label key={tag.id} className="tag-choice">
-                        <input
-                          type="checkbox"
-                          checked={selectedTags.includes(tag.id)}
-                          onChange={(event) =>
-                            setSelectedTags((current) =>
-                              event.target.checked
-                                ? [...current, tag.id]
-                                : current.filter((id) => id !== tag.id),
-                            )
-                          }
-                        />
-                        {tag.name}
-                      </label>
+                      <div key={tag.id} className="flex items-center gap-2">
+                        <Checkbox.Item id={`asset-tag-${tag.id}`} value={tag.id} />
+                        <Label htmlFor={`asset-tag-${tag.id}`}>{tag.name}</Label>
+                      </div>
                     ))
                   ) : (
-                    <span className="muted">在「整理与设置」中创建标签。</span>
+                    <span className="text-xs text-basalt-muted-foreground">
+                      在「整理与设置」中创建标签。
+                    </span>
                   )}
                 </div>
-              </div>
+              </Checkbox.Group>
             </div>
-            {error && (
-              <p role="alert" className="error-message">
-                {error}
-              </p>
-            )}
-            <div className="preview-footer">
+            {error && <Banner variant="error" role="alert" size="sm" description={error} />}
+            <DialogFooter className="sm:items-center">
               <Button
                 variant={favorite ? "secondary" : "ghost"}
-                icon={<Heart size={16} fill={favorite ? "currentColor" : "none"} />}
+                icon={
+                  <Heart
+                    className="size-4"
+                    fill={favorite ? "currentColor" : "none"}
+                    strokeWidth={1.5}
+                  />
+                }
                 onClick={() => setFavorite(!favorite)}
               >
                 {favorite ? "已收藏" : "加入收藏"}
               </Button>
-              <span className="muted" role="status">
-                {saved ? "修改已保存" : ""}
+              <span className="text-xs text-basalt-muted-foreground sm:mr-auto" role="status">
+                {saved === editSignature ? "修改已保存" : ""}
               </span>
               <Button onClick={() => void save()} loading={busy} disabled={!title.trim()}>
                 保存修改
               </Button>
-            </div>
+            </DialogFooter>
           </>
         )}
       </DialogContent>

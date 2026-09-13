@@ -1,142 +1,159 @@
-# Snail — brand assets v1.0.0
+# Snail — returning to a moment
 
-Snail is a private library for collecting, organizing and playing videos. Its
-identity is a quiet coiled shell, a low carrying line and one terracotta point.
-The shell suggests a collection kept close; the forward line and point suggest
-returning to a chosen film. The point is part of the mark, not a live status light.
+Brand assets **2.0.0**, commissioned on 2026-09-13. Snail is a private library
+for collecting, organizing and playing videos. A broad terracotta spiral holds
+the collection; an ink-and-olive snail moves toward one quiet red point.
 
-This original vector identity was commissioned by the owner on 2026-09-12 and
-designed in hexly.ai. It follows the actual Hexly paper, ink, terracotta and
-Space Grotesk language. No Eagle artwork, third-party icon, traced image or
-image-model output was used. The earlier sketch is preserved in the source
-archive; the selected geometry below is the published master.
+The animal is a real **Azure OpenAI gpt-image-2 raster generation**. Connected,
+irregular facets run through shell and body, alongside Hexly's Frogie, Pew and
+Ocelot family. Neither Eagle nor the rejected Snail v1 mark was a model input.
+The v1 archive remains intact; its rejection does not erase its history.
 
-- Project and interactive archive: https://hexly.ai/projects/snail#brand
-- Standalone specimens: https://hexly.ai/brands/snail/v1.0.0/review.html
-- Asset base: https://hexly.ai/brands/snail/v1.0.0/
-- Checksums and exact byte sizes: `manifest.json` beside these assets.
-- Source archive: `artwork/brands/snail/v1.0.0/` in `nocoo/hexly.ai`.
-- Snail application: https://github.com/nocoo/snail; intended site https://snail.hexly.ai.
+- Project archive: https://hexly.ai/projects/snail#brand
+- Asset base: https://hexly.ai/brands/snail/v2.0.0/
+- Complete specimen page: `review.html`
+- Exact filenames, byte lengths and SHA-256: `manifest.json`
+- Requests, references, selection and processing: `provenance.json`
+- Source: `artwork/brands/snail/v2.0.0/` and six dated studies under
+  `artwork/logo-family/snail/` in `nocoo/hexly.ai`.
 
-Brand publication does not establish adoption or release of the application.
-The Snail team owns its implementation, integration, product version and
-deployment. At the initial brand handoff, the application is in development
-toward v0.1.0. These brand assets use the independent version 1.0.0.
+This is a brand publication. Adoption is a separate Snail-team change. The
+application's reported 0.1.0 deployment is a candidate, with authenticated
+production acceptance and its formal tag/Release still pending at this handoff.
 
 ## Asset roles
 
 | Use | File | Contract |
 | --- | --- | --- |
-| Header, sidebar, navigation | `mark-light.svg` / `mark-dark.svg` | Transparent; choose the actual app theme, without a tile or CSS crop |
-| Standalone mark with system theme | `mark.svg` | SVG media query; use explicit variants when app and system themes differ |
-| Text-only brand | `wordmark-light.svg` / `wordmark-dark.svg` | Real Space Grotesk 600 outlines; no font dependency |
-| Header, README, brand title | `lockup-light.svg` / `lockup-dark.svg` | Fixed symbol/wordmark spacing; preserve the complete viewBox |
-| App tile, large presentation | `icon-light.svg` / `icon-dark.svg` | Square master with Hexly paper; platform applies its own mask |
-| Browser tab | `favicon.svg` | Transparent, follows system light/dark, exact master geometry |
-| Older browser fallback | `favicon.ico` | True ICO; 16, 32, 48, 64, 128 and 256px transparent entries, terracotta monochrome for both tab themes |
-| Raster application mark | `logo-light.png` / `logo-dark.png` | 1024px transparent rasterizations from the SVG; not separate artwork |
-| Exact small raster marks | `mark-{light,dark}-{16,24,32,48,64,128,256}.png` | Whole-canvas rasterizations with alpha; no tile or crop |
-| Apple touch | `apple-touch-icon.png` | Opaque 180px paper tile; iOS applies rounded corners |
-| Web app icons | `icon-192.png`, `icon-light-512.png`, `icon-dark-512.png` | Declare `purpose: "any"`, not `maskable` |
-| One-color reproduction | `mark-mono.svg` | Ink-only master; keep the separated point and original proportions |
+| Transparent source | `logo.png` | 2048 × 2048 native canvas; accepted opaque RGB unchanged |
+| Header, sidebar, navigation | `mark-{16,24,32,48,64,128,256,512,1024,2048}.png` | Complete transparent animal; choose enough pixels for the display density |
+| Explicit app-theme mark | `mark-light.png`, `mark-dark.png` | Identical transparent bytes; native animal colors work on both themes |
+| Standard raster logo | `logo-light.png`, `logo-dark.png` | Identical transparent 1024px versions |
+| Text-only identity | `wordmark-light.svg`, `wordmark-dark.svg` | Unchanged outlined Space Grotesk 600; select the app theme |
+| Animal and wordmark | `lockup-light.png`, `lockup-dark.png` | 1362 × 576 transparent raster composition; preserve the complete ratio |
+| Large app/README tile | `icon-light.png`, `icon-dark.png` | 2048px square with independent presentation; platform supplies masking |
+| Rounded presentation | `icon-rounded.png` | Large display only; never a navigation mark |
+| Wide archive/README image | `hero.webp`, `hero.png` | Native 2560 × 1024 generation; full frame, no crop |
+| Narrow-screen hero | `hero-square.webp` | 1024px from the separately generated square; not a crop of the wide image |
+| Browser tab | `favicon.ico` | Genuine transparent ICO, 16/32/48/64/128/256px PNG entries |
+| Apple touch/PWA | `apple-touch-icon.png`, `icon-192.png`, `icon-{light,dark}-512.png` | Square sources; PWA purpose is `any`, not `maskable` |
+| Subordinate background | `texture-{light,dark}.svg`, matching PNG | Independently authored 512px seamless spiral/trail tile |
+| Audit and archive | `raw-icon.png`, `hero.png`, `white.png`, `prompt-{icon,hero}.txt` | Untouched generations, white derivative and exact submitted prompts |
 
-Keep transparent marks separate from presentation tiles. Do not round or mask
-the transparent mark, redraw its coil, move the point, add extra dots, stretch
-the wordmark, or substitute a similar font. The public archive preserves the
-original light master separately at `/logos/originals/snail-v1-0-0.svg`.
+There is **no native SVG animal**. No vectorization is needed for the current
+web delivery; the wordmark is licensed font outlines and the texture is authored
+support geometry. A future tracing must say “vectorized derivative,” retain its
+source hash and receive its own version. Do not embed a raster in an SVG wrapper
+and call it a vector master.
 
-## Color and type
+## Color, type and the single point
 
-| Role | Light | Dark |
+| UI role | Light | Dark |
 | --- | --- | --- |
 | Paper | `#f0f0e9` | `#1e2824` |
 | Ink | `#30372e` | `#e6e9dc` |
-| Terracotta point | `#bf5c3c` | `#e79670` |
-| Fine rules | `#d4d8cb` | `#3d4940` |
+| Terracotta | `#bf5c3c` | `#e79670` |
 | Elevated surface | `#f8f8f2` | `#27332c` |
+| Fine rules | `#d4d8cb` | `#3d4940` |
 
-These are unchanged Hexly tokens from `src/styles/base.css` at
-`a55baf21a2f0842c0580098e54d4479e41847593`; `tokens.json` records the evidence.
-Use ink for small text. Terracotta is a sparse identity accent, not the default
-body-text color. Do not put the light ink mark on a dark surface. The fallback
-ICO uses terracotta for visibility on both light and dark tabs.
+These are actual Hexly `src/styles/base.css` tokens at baseline
+`352eb2652d4e11c876ef84152fc8e02f8d5ed331`, also shared with the Video Kit.
+Generated animal pixels are sampled separately in `palette.json`; they are not
+claimed to equal these UI hex values. Do not recolor or apply a CSS filter to the
+animal. Keep the one red point attached to its composition. It is an identity
+gesture, not a live status indicator; add accessible text for actual status.
 
-The wordmark uses the same Space Grotesk weight 600 and -1/23 em tracking as
-the Hexly header. Every glyph is outlined without geometric alteration. The
-bundled WOFF2 is the site's unmodified `@fontsource-variable/space-grotesk@5.3.0`
-font, SHA-256 `0640890476fc1198ab4de571fb658de443c4d85b66466ec09534a8737ab1ce9d`.
+Use ink for small text. The wordmark reuses the site's Space Grotesk 600 and
+-1/23 em tracking, with unchanged v1 outlined glyphs. The unmodified WOFF2 and
+SIL OFL 1.1 notices are included. Keep full letter bounds and line-height of at
+least 1.2 for live Hexly text so the “y” descender is never clipped.
 
-## Clear space and scale
+## Clear space, small sizes and backgrounds
 
-Use one point diameter as the unit: **24 units in the 256-unit mark viewBox**.
-Keep at least one unit clear around the visible artwork. The delivered SVG
-canvas includes that minimum; additional surrounding space is welcome. Retain
-the complete viewBox and scale uniformly. Never crop the title's vertical bounds.
+Preserve the **entire native square** and scale uniformly. No crop, extra mask,
+pose adjustment or added point. The native foreground clears the actual rounded
+outline by **145.5px at 2048px**, exceeding the family's 128px minimum without
+rescaling. Transparent navigation marks do not use that rounded mask.
 
-- Transparent mark: **16px minimum**, 24px preferred for navigation.
-- Wordmark: **72px minimum width**.
-- Symbol plus wordmark: **160px minimum width**.
-- At 16px the silhouette and separated point carry recognition. The smallest
-  turn of the coil softens; use the actual 16px specimen when reviewing a tab.
+- Mark: 16px minimum, **24px preferred** for navigation; supply a 2× raster on
+  high-density displays. At 16px the shell and low silhouette carry recognition;
+  fine facets, antennae and the red point soften. Do not promise detailed anatomy
+  at favicon size.
+- Wordmark: at least 72px wide. Lockup: at least 160px wide.
+- Keep at least 6.25% of the square's width free around the visible artwork.
+  The master already includes this clearance; do not trim it away.
+- Transparent marks have no background, glow, CSS rounding or tile shadow.
+  The animal's dark lower facets can recede on night paper; the warm shell and
+  lighter head carry the silhouette. Never recolor to force every facet brighter.
+- Use empty alt text beside a visible product name; otherwise label it “Snail.”
+  Textures are decorative and motionless, with no information carried by color.
 
-Use an accessible text label on a logo link. An image beside the written product
-name can use empty alt text; a standalone image uses `alt="Snail"`. Do not use
-the red point alone to communicate service health. Static logo display is the
-default and works with reduced motion without another animation layer.
+The repeatable texture uses a polygon spiral, broken facet paths and a returning
+trail. Its ink opacity is 3.8%, accent opacity 3.2%; the SVG has a transparent
+border, so adjacent tiles meet without a seam. Repeat at 360–480 CSS pixels and
+choose the **application** theme explicitly. Use ink for text on a textured
+surface: muted text over patterned light page paper can fall below 4.5:1.
+Do not place high-contrast texture
+over the animal or recolor the old identity's paths to fake a new texture.
 
 ## Integration
 
-Download the selected files from the public base above; verify each SHA-256
-against the manifest **from the published Hexly Git commit**. Vendor the bytes
-into Snail, keep a copy of the manifest and license files, and record both the
-Hexly commit and brand version in Snail's provenance. Do not depend on a mutable
-`main` URL or runtime fetching of the entire brand kit. Snail owns these writes.
+Pin the **published Hexly Git SHA** provided with the handoff. Download its
+manifest from that commit, then verify each selected CDN file's byte count and
+SHA-256. Copy selected exact bytes into Snail, retain the manifest and MIT/OFL
+notices, and record the brand version, Hexly SHA and your own adoption commit.
+No runtime request for the whole kit is required.
 
 ```html
-<link rel="icon" href="/brand/favicon.svg" type="image/svg+xml">
-<link rel="alternate icon" href="/brand/favicon.ico" sizes="any">
+<link rel="icon" href="/brand/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/brand/apple-touch-icon.png">
-<!-- Choose the variant from the application's theme, not just the OS theme. -->
-<img src="/brand/lockup-light.svg" alt="Snail" width="227" height="96">
+<img src="/brand/mark-48.png" alt="" width="24" height="24">
+<!-- Select this variant from the application's theme, not only the OS. -->
+<img src="/brand/wordmark-light.svg" alt="Snail" width="80" height="40">
+<picture>
+  <source media="(max-width: 640px)" srcset="/brand/hero-square.webp"
+    width="1024" height="1024">
+  <img src="/brand/hero.webp" alt="A faceted snail moving toward one red point"
+    width="2560" height="1024" style="display:block;width:100%;height:auto">
+</picture>
 ```
 
-For a dark app theme, use `lockup-dark.svg` with the same dimensions. The complete
-vector lockup is 454 × 192, and the standalone mark is 256 × 256. Files in this
-versioned public directory are immutable after publication. A geometry, palette,
-wordmark or export-byte change requires a new brand version and directory.
+The application theme may differ from the OS theme: choose the wordmark and
+texture accordingly. The favicon and transparent animal are theme neutral.
+Both hero sources keep their native composition; do not use `object-fit: cover`.
 
-The existing site share card is https://hexly.ai/og/snail.jpg. The source product
-may use it through the standard Hexly share metadata integration; it is separate
-from the immutable logo assets.
+Only hexly.ai was modified for this commission. Snail owns its adoption, product
+code, authentication acceptance and releases; these are outside this archive.
 
-## License and provenance
+## Provenance, rights and reproduction
 
-- Original Snail geometry, specimens and export code: repository MIT license,
-  copyright 2026 Zheng Li; see `license.txt`.
-- Space Grotesk: original copyright notices and SIL Open Font License 1.1 in
-  `space-grotesk-ofl.txt`. Preserve those notices if distributing the font.
-- Hexly endorsement geometry: exact existing `BrandMark` paths, sourced from
-  `src/components/Icon.tsx` and the shared Video Kit brand record. It is supplied
-  separately as `hexly-mark.svg`; do not confuse it with the Snail product mark.
-- No externally supplied images, trademark artwork or raster tracing. No claim
-  is made that a font license transfers trademark rights.
+Six paid Azure OpenAI `/images/edits` requests used `gpt-image-2`, quality `high`:
+three native 2048² icons and three independent 2560 × 1024 heroes. All prompts,
+ordered reference hashes, actual request IDs, sanitized responses and untouched
+PNG/C2PA bytes remain in Git. Codex selected Returning (01) with its Hero (04)
+under owner-delegated batch acceptance. The owner did not review the exact new
+bytes; Grok's different preference for candidate 02 is retained in the decision.
 
-## Reproduction
+Finishing extracts only exterior-connected near-white pixels, protects the
+animal and the separate point, and unmates boundary pixels. The exported master
+preserves all **1,227,417 fully opaque pixels exactly**; 10,123 soft-edge pixels
+carry alpha. No crop, scale adjustment, reposition, recolor or geometry retouch
+was performed. Hero PNG is byte-identical to its native generation.
 
-The native design files and tools are in `artwork/brands/snail/v1.0.0/`.
-`outline-wordmark.py` uses pinned FontTools 4.60.1 and Brotli 1.1.0 to instance the
-existing font at weight 600. `export.ts` uses the repository's pinned Sharp and
-shared Hexly tokens. Source masters remain SVG; PNGs are documented rasterizations.
+Authored code, texture and any generated-output rights held by the owner are
+offered under MIT; see `license.txt` for the generation terms and limits. Font
+rights remain SIL OFL 1.1. Reference assets are Hexly's archived family resources;
+their use as model inputs does not transfer ownership of their original files.
 
 ```sh
-uv run --with fonttools==4.60.1 --with brotli==1.1.0 python artwork/brands/snail/v1.0.0/outline-wordmark.py
-bun artwork/brands/snail/v1.0.0/export.ts
+# Preparing a NEW, uncommitted version only. Published versions are immutable.
+bun artwork/brands/snail/v2.0.0/export.ts
 bun run assets:build
 bun run docs:profiles
 bun run assets:check
 ```
 
-The export command is for preparing an uncommitted version and refuses to change
-a version already committed to Git. For a revision, start a new version directory
-and update its paths. Check light/dark marks at 16/24/32/64/128px, decode every ICO
-entry, inspect the complete lockup, then verify the published HTTP bytes.
+The exporter refuses a committed version. Clone the recipe into a new version
+for revisions; never rerun generation into an existing study or overwrite the
+frozen finishing pass. The previous identity remains at
+https://hexly.ai/brands/snail/v1.0.0/review.html with its original manifest.
